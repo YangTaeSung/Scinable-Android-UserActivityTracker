@@ -1,0 +1,39 @@
+
+html {
+  font-size: 10px; /* px 은 'pixels' 를 의미합니다: 기본 글자 크기는 현재 10 pixels 높이입니다. */
+  font-family: 'Anton', sans-serif;
+    background-color: #00539F;
+}
+
+body {
+  width: 600px;
+  margin: 0 auto;
+  background-color: #FF9500;
+  padding: 0 20px 20px 20px;
+  border: 5px solid black;
+}
+
+h1 {
+  font-size: 60px;
+  text-align: center;
+  
+  /* 바디 상단에 틈이 있습니다. 가독성을 위하여 margin을 설정해주는 것이 좋습니다. */
+  margin: 0;
+  padding: 20px 0;    
+  color: #00539F;
+  /* 텍스트의 그림자 설정, < 수평 오프셋, 수직 오프셋, 흐림 반경, 기본 색상 > */
+  text-shadow: 3px 3px 1px black;
+}
+
+p, li {
+  font-size: 16px;    
+  line-height: 2; 
+  letter-spacing: 1px;
+}
+
+img {
+  display: block;
+    /* 왜그런지 모르겠지만 이미지가 가운데 정렬돼 */
+  margin: 0 auto;
+}
+
