@@ -47,31 +47,53 @@ public class Trans {
     }
 
     public void addItem(String[] items){
-        this.items.add(items);
+
     }
 
     public void setMember(String[] member){
-        int i;
-        for(i = 0 ; i < 9; i++){
+        for(int i = 0 ; i < 9; i++){
             this.member.add(member[i]);
         }
         this.member.add("1"); //valid_yn
 
-        if(member.length > 9){
-            while(i < member.length){
-                if(member[i].isEmpty()){
-                    this.member.add("");
-                }
-                else{
-                    this.member.add(member[i]);
-                }
-                i++;
+        String[] jo = new String[5];
+
+        if(member.length == 10){
+            member[9] = member[9].substring(1,member[9].length() - 1); //9번째 입력의 처음과 마지막에 위치한 '{', '}'를 제거
+            jo = member[9].split(",");
+        }
+
+        for(int i = 0; i < 5; i++){
+            if(jo[i].isEmpty()){
+                this.member.add("");
+            }
+            else{
+                this.member.add(jo[i]);
             }
         }
     }
 
-    public void addOrder(String[] order){
-        //this.order.add(order);
+    public void addTrans(String[] order){
+        for(int i = 0 ; i < 8; i++){
+            this.order.add(order[i]);
+        }
+        this.order.add("1"); //valid_yn
+
+        String[] jo = new String[5];
+
+        if(order.length == 9){
+            order[8] = order[8].substring(1,order[8].length() - 1); //9번째 입력의 처음과 마지막에 위치한 '{', '}'를 제거
+            jo = order[9].split(",");
+        }
+
+        for(int i = 0; i < 5; i++){
+            if(jo[i].isEmpty()){
+                this.order.add("");
+            }
+            else{
+                this.order.add(jo[i]);
+            }
+        }
     }
 
     public void addClaim(String[] claim){
