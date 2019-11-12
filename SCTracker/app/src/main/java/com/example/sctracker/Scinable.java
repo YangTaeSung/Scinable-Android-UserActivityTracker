@@ -6,22 +6,26 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 public class Scinable {
 
-    boolean cookieEnabled = true; //
+    // "_host"는 ECIntelligence or 서버
+    public static String _host = "localhost:8080";
+
+    public static boolean cookieEnabled = true; //
     private static String scinableObject = "_scq"; //
     private static ArrayList<String> _scq = new ArrayList<>(); //
 
-    private static String accountId = "";
-    private static String language = null;
-    private static boolean debug = false;
-    private static String uid = null;
-    private static String vid = null;
+    public static String accountId = "";
+    public static String language = null;
+    public static boolean debug = false;
+    public static String domainName = null;
+    public static String uid = null;
+    public static String vid = null;
     private static String ck = null;
     private static String campaign = "";
     private static String channel = "";
     private static String preVisitDate = null;
     private static int frequency = 0;
     private static int newVisit = 0;
-    private static String offline = "";
+    public static String offline = "";
     private static int pageView = 1;
     // Define customField as Object
     // private static ArrayList<String> customField = new ArrayList<>();
@@ -34,7 +38,7 @@ public class Scinable {
 
     /*
     // 사용자가 이전에 사이트를 방문하지 않은 경우 브라우저에는 사이트에
-    캐이 된 파일이 없으므로 서버에서 모든 파일을 가져옵니다.
+    캐시 된 파일이 없으므로 서버에서 모든 파일을 가져옵니다.
     // 사용자가 사이트를 방문한 적이 있는 경우 브라우저는 웹 서버에서
     HTML 페이지를 검색하지만 정적 자산(JavaScript,CSS,이미지)에 대해서는 캐시를 참조합니다.
 
@@ -82,7 +86,7 @@ public class Scinable {
     XMLHttpRequest 는 이름으로만 봐서는 XML 만 받아올 수 있을 것 같아 보이지만,
     모든 종류의 데이터를 받아오는데 사용할 수 있습니다. 또한 HTTP 이외의 프로토콜도 지원합니다(file 과 ftp 포함).
 
-    // XMLHttpRequest() 생성자는 XMLHttpRequest 를 초기화합니다. 다른 모든 메소드 호출이전에 호출되어야 합니다.
+    // XMLHttpRequest() 생성자는 XMLHttpRequest 를 초기화합니다. 다른 모든 메소드 호출 이전에 호출되어야 합니다.
     // XMLHttpRequest.onreadystatechange : readyState 어트리뷰트가 변경될 때마다 호출되는 이벤트핸들러입니다.
     // XMLHttpRequest.readyState : 요청의 상태를 unsigned short로 반환합니다. [read only]
     // XMLHttpRequest.open() : 요청을 초기화합니다. 이 메소드는 네이티브 코드로부터의 요청을 초기화하기 위해
