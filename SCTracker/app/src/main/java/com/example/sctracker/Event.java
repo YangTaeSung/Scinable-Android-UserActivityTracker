@@ -1,5 +1,6 @@
 package com.example.sctracker;
 
+// Scinable.Event에서 add속성은 변수, stop속성은 함수, 의미해석 아예 안된 상황, evt변수 global 부분 모름.
 public class Event extends Scinable {
 
         String add = ""; // variable 'add' is supposed that string type
