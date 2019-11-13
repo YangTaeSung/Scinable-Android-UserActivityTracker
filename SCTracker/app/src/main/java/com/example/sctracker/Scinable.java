@@ -79,18 +79,24 @@ public class Scinable {
 
     /*
 
-    XMLHttpRequest(XHR) 객체는 서버와 상호작용하기 위하여 사용됩니다.
-    전체 페이지의 새로고침없이도 URL 로부터 데이터를 받아올 수 있습니다.
+    XMLHttpRequest(XHR) 객체는 웹 브라우저가 서버와 상호작용하기 위하여 사용됩니다.
+    전체 페이지의 새로고침없이도 URL 로부터 데이터를 받아올 수 있습니다. 웹브라우저가 백그라운드에서 서버와 계속 통신합니다.
     이는 웹 페이지가 사용자가 하고 있는 것을 방해하지 않으면서 페이지의 일부를 업데이트할 수 있도록 해줍니다.
     XMLHttpRequest 는 AJAX 프로그래밍에 주로 사용됩니다.
     XMLHttpRequest 는 이름으로만 봐서는 XML 만 받아올 수 있을 것 같아 보이지만,
     모든 종류의 데이터를 받아오는데 사용할 수 있습니다. 또한 HTTP 이외의 프로토콜도 지원합니다(file 과 ftp 포함).
 
+    현재 대부분의 주요 웹 브라우저는 XMLHttpRequest 객체를 내장하고 있습니다.
+    이러한 XMLHttpRequest 객체를 생성하는 방법은 브라우저의 종류에 따라 다음과 같이 나눠집니다.
+    1. XMLHttpRequest 객체를 이용한 방법
+    2. ActiveXObject 객체를 이용한 방법
+    익스플로러 7과 그 이상의 버전, 크롬, 파이어폭스, 사파리, 오페라에서는 XMLHttpRequest 객체를 사용합니다.
+    하지만 익스플로러의 구형 버전인 5와 6 버전에서는 ActiveXObject 객체를 사용해야 합니다.
+
     // XMLHttpRequest() 생성자는 XMLHttpRequest 를 초기화합니다. 다른 모든 메소드 호출 이전에 호출되어야 합니다.
     // XMLHttpRequest.onreadystatechange : readyState 어트리뷰트가 변경될 때마다 호출되는 이벤트핸들러입니다.
-    // XMLHttpRequest.readyState : 요청의 상태를 unsigned short로 반환합니다. [read only]
-    // XMLHttpRequest.open() : 요청을 초기화합니다. 이 메소드는 네이티브 코드로부터의 요청을 초기화하기 위해
-        JavaScript 코드에 의해 사용됩니다. 대신 openRequest() 를 사용하세요.
+    // XMLHttpRequest.readyState : readyState == 4 은 작업이 완전히 완료됨을 나타냅니다.
+    // XMLHttpRequest.open(method, url) : get 또는 post 메소드 및 url을 지정하여 요청을 엽니다.
     // XMLHttpRequest.send() : 요청을 보냅니다. 요청이 비동기인 경우(기본값), 이 메소드는 요청이 보내진 즉시 반환합니다.
 
 

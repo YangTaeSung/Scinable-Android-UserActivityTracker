@@ -1,6 +1,9 @@
 package com.example.sctracker;
 
 public class Tracker {
+
+    GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
+
     public void _setDebug(boolean p) {
         Scinable.debug = p;
     }
