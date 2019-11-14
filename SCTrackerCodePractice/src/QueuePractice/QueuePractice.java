@@ -1,18 +1,13 @@
+package QueuePractice;
 /*
+ * 
  * Scinable - Ken
  * 
- * 
- * Tracker Object의 개념 이해 부족
- * sc.js는 scq 배열에 push할 때, Tracker 메소드와 그 인자를 보내는 형식인데
- * 본 프로젝트에서는 큐 두개 만들고 Tracker 메소드의 이름과 인자의 이름 두 개만 서버로 보내주도록 만드는 중
- * "_trackPageview" 처럼 데이터를 모아두었다가 일괄적으로 서버에 보내는 작업 필요 - while문으로 구현, 더 알아볼 것
+ * 개념 익히기 위한 연습
  *
- * 
  */
 
 
-
-// scq 큐를 배열로 구현
 interface Queue {
     boolean isEmpty();
     boolean isFull();
@@ -24,7 +19,7 @@ interface Queue {
  
 // sc.js의 _scq배열 -> 비동기 구문을 가능하게 하는 것, 큐 역할
 // scq를 객체로 만들기 위해 클래스 생성
-public class SCQ implements Queue {
+public class QueuePractice implements Queue {
     
     private int front;
     private int rear;
@@ -32,7 +27,7 @@ public class SCQ implements Queue {
     private String queueArr[];
  
     // 큐를 생성하는 생성자
-    public SCQ(int queueSize) {
+    public QueuePractice(int queueSize) {
         front = -1;    // front 포인터 초기화
         rear = -1;    // rear 포인터 초기화
         this.queueSize = queueSize;    // queue 사이즈 설정
@@ -134,7 +129,7 @@ public class SCQ implements Queue {
     * 
     * public static void main(String args[]) {
         int queueSize = 5;
-        SCQ arrQueue = new SCQ(queueSize);
+        QueuePractice arrQueue = new QueuePractice(queueSize);
         
         arrQueue.enqueue('A');
         arrQueue.printQueue();
@@ -173,3 +168,5 @@ public class SCQ implements Queue {
     *
     */
 }
+
+

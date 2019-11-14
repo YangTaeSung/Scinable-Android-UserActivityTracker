@@ -1,11 +1,13 @@
+package QueuePractice;
+
 public class Tracker {
 	 
 	// 고객이 트래커 코드를 추가했을 때 scq 큐가 만들어진다.
 	// 서버로 보내지는 형식이 Tag,Content의 쌍이라고 가정, 두 개의 scq큐 생성
 	// 큐의 사이즈는 임의로 30 지정
 	int queueSize = 30;
-	SCQ scqTag = new SCQ(queueSize);
-	SCQ scqContent = new SCQ(queueSize);
+	QueuePractice scqTag = new QueuePractice(queueSize);
+	QueuePractice scqContent = new QueuePractice(queueSize);
 	
 	// sc.js의 setAccount는 트래커의 객체 메소드 이름, accountId는 객체 메소드에 전달할 인수
 	// push하면서 큐에 들어가는 형식
@@ -40,7 +42,7 @@ public class Tracker {
 	
 	public void sendToServer(String tag, String content) {
 		//
-		// 서버로 보내는 내용은 안드로이드에서 구현해보기
+		// 서버로 보내기
 		//
 	}
 	
