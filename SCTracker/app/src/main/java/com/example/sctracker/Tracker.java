@@ -4,30 +4,47 @@ public class Tracker {
 
     GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
 
+
     public void _setDebug(boolean p) {
+
         Scinable.debug = p;
+
     }
+
 
     public void _setAccount(String p) {
+
         Scinable.accountId = p;
+
     }
 
+
     public void _setDomainName(String p) {
+
         if(p.split(".").length-1 == 1) {
+
             Scinable.domainName = "." + p;
+
         }
         else {
+
             Scinable.domainName = p;
+
         }
+
     }
 
     public void _setLanguage(String p) {
+
         Scinable.language = p;
+
     }
 
     public void _setSessionCookieTimeout(long timeout) {
+
         Config.cvExpire = timeout;
         Config.czExpire = timeout;
+
     }
 
     public void _setVisitorCookieTimeout(long timeout) {

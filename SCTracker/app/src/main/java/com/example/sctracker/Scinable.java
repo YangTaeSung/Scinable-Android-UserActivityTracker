@@ -145,4 +145,42 @@ public class Scinable {
 
      */
 
+
+
+
+
+
+    public String getOrderdata() {
+
+        if(debug) {
+
+            String cz = Util.getCookie("___cz");
+
+            if(Trans.order[0] == cz) {
+
+                return "";
+
+            } else {
+
+                Util.setCookie("___cz",Trans.order[0], Config.czExpire)
+
+            }
+
+            String[] arr;
+            int orderLength = Trans.order.length;
+            int itemsLength = Trans.items.length;
+
+            for ( int i = 0; i < Trans.items.length; ++i) {
+
+                String[] rowArr = {Trans.type};
+                /* 이후 concat() 메소드를 실행하면 Array 속 자료형이 다름. 넘김.*/
+
+            }
+
+        }
+
+    }
+
+
+
  }
