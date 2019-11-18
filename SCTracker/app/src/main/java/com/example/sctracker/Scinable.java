@@ -27,6 +27,8 @@ public class Scinable {
     private static int newVisit = 0;
     public static String offline = "";
     private static int pageView = 1;
+
+
     // Define customField as Object
     // private static ArrayList<String> customField = new ArrayList<>();
 
