@@ -9,7 +9,10 @@ public class Scinable {
     // "_host"는 ECIntelligence or 서버
     public static String _host = "localhost:8080";
 
-    public static boolean cookieEnabled = true; //
+    public static String cookie = null; // *
+    public static boolean cookieEnabled = false;
+    // SharedPreferences로 아이디 정보 저장한 후 cookieEnabled가 필요할때마다
+    // 해당하는 아이디값을 검색해서 확인하는 메소드를 만들어서 true,false에 변화를 주던지 아예 없애던지
     private static String scinableObject = "_scq"; //
     private static ArrayList<String> _scq = new ArrayList<>(); //
 

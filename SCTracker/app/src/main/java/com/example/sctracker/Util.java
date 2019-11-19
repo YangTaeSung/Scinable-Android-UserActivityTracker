@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.sctracker.Scinable.cookieEnabled;
+
 
 public class Util {
 
@@ -250,14 +252,71 @@ public class Util {
     // 쿠키매니저도 웹뷰용. 쿠키 직접 만들어보기.
     public String getCookies() {
 
-        return "";
+        if(Scinable.cookieEnabled) {
+
+            // cookieEnabled가 true인 상태면 SharedPreferences에 쿠키가 있는 상태니까
+            // 찾아서 뽑아주기만 하면 돼, js코드는 과정이 조금 긴데 간단하게 할 수 있을 듯.
+
+        } else {
+
+            return "";
+
+        }
+    }
+
+
+    // 쿠키 생성 메소드. 생성할 쿠키의 이름, 쿠키의 값, 만료시간 세 개가 파라미터
+    // expires는 밀리초시간으로 들어옴. 만료 시간을 받음.
+    public void setCookies(String name, String value, long expires) {
+
+        // escape()함수 더이상 사용 안함, encodeURI()나 encodeURIComponent() 사용할 것.
+        // 두 함수 모두 위에 구현해놓음.
+        String str = name + "=" + encodeURI(value) + ";";
+
+        if(Scinable.domainName != null) {
+
+            str += " domain=" + Scinable.domainName + ";";
+
+        }
+
+        str += " path=/";
+
+        if(expires != 0) {
+
+            // 1970년 1월 1일 기준부터 지금까지의 밀리초시간을 구하고 만료시간을 더한다.
+            // 더한 값으로 날짜를 계산하여 str 변수에 추가한다.
+            /* 1970/1/1 이후로의 시간을 밀리초로 계산
+             * System.currentTimeMillis();
+             * 출력 형식 GMTString
+             * toGMTString()메소드 안드로이드에서 사용 불가
+             * 포맷으로 형식 지정 */
+            SimpleDateFormat format1 = new SimpleDateFormat("E, d MMM yyyy hh:mm:ss GMT");
+            Calendar calendar = Calendar.getInstance();
+            expires += calendar.getTimeInMillis(); // 현재시간 밀리초값을 만료시간과 더하기
+            Date timegmt = new Date(expires); // 해당 밀리초값을 날짜로 변환
+            str += "; expires=" + format1.format(timegmt);
+
+        }
+
+        Scinable.cookie = str;
 
     }
 
 
-    // 쿠키를 설정해놓고 해당 페이지에서 하는 액션들을 기록하는데 사용할 듯
-    public void setCookies() {
+    // 위 함수에서 세 번째 파라미터가 존재하지 않을 때
+    public void setCookies(String name, String value) {
 
+        String str = name + "=" + encodeURI(value) + ";";
+
+        if (Scinable.domainName != null) {
+
+            str += " domain=" + Scinable.domainName + ";";
+
+        }
+
+        str += " path=/";
+
+        Scinable.cookie = str;
     }
 
 
@@ -285,7 +344,7 @@ public class Util {
         }
         else {
 
-            if(Scinable.cookieEnabled) { // 쿠키 사용부분. 수정 필요
+            if(cookieEnabled) { // 쿠키 사용부분. 수정 필요
 
                 return getUid();
 
@@ -352,7 +411,7 @@ public class Util {
         Calendar calendar = Calendar.getInstance();
 
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
+        int month = calendar.get(Calendar.MONTH); // 원래 0~11이라 +1 해주는데 제대로 바뀐듯
         int date = calendar.get(Calendar.DATE);
 
         // 정상적으로 나이 출력 확인 완료한 식
