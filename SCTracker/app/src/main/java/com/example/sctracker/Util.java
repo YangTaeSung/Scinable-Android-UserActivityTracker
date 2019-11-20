@@ -68,7 +68,7 @@ public class Util {
     }
 
 
-    // 브라우저의 버전을 리턴하는 함수. Android sdk의 버전을 출력해야 하는지
+    // 브라우저의 버전을 리턴하는 함수. Android sdk의 버전을 출력해야 하는가
     public int msie() {
 
         return 0;
@@ -104,7 +104,7 @@ public class Util {
 
     // HTMLElement.offsetWidth 읽기 전용 속성은 정수로 요소의 레이아웃 폭을 돌려줍니다.
     // var intElemOffsetWidth = element.offsetWidth;
-    // element가 무엇을 뜻하는지
+    // element가 HTML요소로 예상됨.
     public int elementWidth() {
 
         if(msie() < 10) {
@@ -129,8 +129,9 @@ public class Util {
 
             result = URLEncoder.encode(value, "UTF-8")
                     .replace(" ", "");
-            // 공백 제거라서 임의로 코드 작성, 시험해볼 것
-            // 역슬래시 하나 더해줘서 escape 문자 처리
+            // 공백 제거
+            // 임의로 코드 작성, 시험해볼 것
+            // 역슬래시 하나 더해주면 escape 문자 처리 가능
             // 해당 문자열 앞에 (?i)를 사용하면 대소문자 구분 안함
 
         }
@@ -147,12 +148,12 @@ public class Util {
     }
 
 
-    public String defaultString() {
+    public static String defaultString() {
         return "";
     }
 
 
-    public String defaultString(String value) {
+    public static String defaultString(String value) {
         return value;
     }
 
@@ -169,12 +170,13 @@ public class Util {
         try {
 
             val1 = URLEncoder.encode(val, "UTF-8")
-                    .replace("(?i)<B>", ConfigSuggest.FontStart);
+                    .replace("(?i)<B>", SuggestConfig.FontStart);
             val2 = URLEncoder.encode(val1, "UTF-8")
-                    .replace("(?i)<\\/B>", ConfigSuggest.FontEnd);
+                    .replace("(?i)<\\/B>", SuggestConfig.FontEnd);
             // 역슬래시 하나 더해줘서 escape 문자 처리
             // 해당 문자열 앞에 (?i)를 사용하면 대소문자 구분 안함
-            // 위에 있는 Config는 suggest에 있는거. 아직 구현 안함.
+            // 위에 있는 Config는 suggest에 있는거. FontStart와 End는 못찾음.
+            // 일단 Font가 들어가는걸로 봐서 안드로이드에서 구현 안해도 될 것 같음.
 
         }
         // This exception should never occur.
@@ -216,6 +218,9 @@ public class Util {
     }
 
 
+    public static String paramValues;
+
+
     // location.search : URL의 쿼리 문자열 부분을 반환
     // ex) www.abc.com?aaasssddd=e@e.e 이면  ?aaasssddd=e@e.e 반환
     // split : 문자열을 하위 문자열 배열로 나눕니다.
@@ -237,7 +242,7 @@ public class Util {
     }
 
 
-    public String today() {
+    public static String today() {
 
         SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
         Date time = new Date();
@@ -250,7 +255,7 @@ public class Util {
     // 쿠키값을 리턴해주는 메소드. Document.cookie는 모든 쿠키가 저장되어 있는데
     // IndexOf()로 시작 위치를 찾고 len으로 길이 찾고 end지점 찾아서 리턴해줘
     // 쿠키매니저도 웹뷰용. 쿠키 직접 만들어보기.
-    public String getCookies() {
+    public String getCookie() {
 
         if(Scinable.cookieEnabled) {
 
@@ -267,7 +272,7 @@ public class Util {
 
     // 쿠키 생성 메소드. 생성할 쿠키의 이름, 쿠키의 값, 만료시간 세 개가 파라미터
     // expires는 밀리초시간으로 들어옴. 만료 시간을 받음.
-    public void setCookies(String name, String value, long expires) {
+    public void setCookie(String name, String value, long expires) {
 
         // escape()함수 더이상 사용 안함, encodeURI()나 encodeURIComponent() 사용할 것.
         // 두 함수 모두 위에 구현해놓음.
@@ -304,7 +309,7 @@ public class Util {
 
 
     // 위 함수에서 세 번째 파라미터가 존재하지 않을 때
-    public void setCookies(String name, String value) {
+    public void setCookie(String name, String value) {
 
         String str = name + "=" + encodeURI(value) + ";";
 

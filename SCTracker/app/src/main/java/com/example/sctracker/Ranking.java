@@ -1,15 +1,11 @@
 package com.example.sctracker;
 
-import javax.script.ScriptEngineManager;
 public class Ranking {
 
     public void callback(String result) {
 
-        if(result != null) {
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("js");
-            Object result = engine.eval("4*5");
-        }
+        // eval함수 부분. 호출될 때 매개변수가 없는 것이 의문.
+        // 한 번 호출. 일단 넘김
 
     }
 
