@@ -34,11 +34,13 @@ public class Tracker {
 
     }
 
+
     public void _setLanguage(String p) {
 
         Scinable.language = p;
 
     }
+
 
     public void _setSessionCookieTimeout(long timeout) {
 
@@ -47,11 +49,14 @@ public class Tracker {
 
     }
 
+
     public void _setVisitorCookieTimeout(long timeout) {
         Config.cuExpire = timeout;
         Config.ccExpire = timeout;
     }
 
+
+    // access
     public void _trackPageview() {
         if(!Scinable.cookieEnabled) {
             return;
@@ -73,6 +78,23 @@ public class Tracker {
             gk = carr[2];
             cl = carr[3];
         }
+
+        String json = "";
+
+        if(Trans.order.length > 0) {
+
+            json = Scinable.getOrderData();
+
+        } else if(Trans.member.length > 0) {
+
+            json = Scinable.getMemberData();
+
+        } else if(Trans.claim.length > 0) {
+
+            json = Scinable.getClaimData();
+
+        }
+
 
         // 여기서부터 다시
     }

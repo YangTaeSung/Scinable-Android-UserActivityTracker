@@ -6,7 +6,7 @@ public class Trans {
     public static String type = "C";
     public static String[] order;
     public static String[] items;
-    String[] member[];
-    String[] claim[];
+    public static String[] member;
+    public static String[] claim;
 
 }

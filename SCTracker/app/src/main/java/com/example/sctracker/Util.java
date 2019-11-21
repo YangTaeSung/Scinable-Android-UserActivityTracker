@@ -3,11 +3,17 @@ package com.example.sctracker;
 import android.content.Intent;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import static com.example.sctracker.Scinable.campaign;
+import static com.example.sctracker.Scinable.cookie;
 import static com.example.sctracker.Scinable.cookieEnabled;
 
 
@@ -34,7 +40,7 @@ public class Util {
 
 
     // URL 인코딩은, URL 스트링에 있는 텍스트를, 모든브라우저에서 똑바로 전송하기 위해 존재한다.
-    public String encodeURI(String val) {
+    public static String encodeURI(String val) {
 
         // sc.js에서는 encodeURIComponent를 사용하는데 java의 URLEncoder와 미묘한 차이 발생
         // encodeURIComponent()함수에서 encode()함수의 수정을 통해 javascript의 encodeURIComponent와 같은 동작 실행
@@ -252,27 +258,67 @@ public class Util {
     }
 
 
+    public String getParameter(String name) {
+
+        if(Util.paramValues == null) {
+
+            Util.paramValues = Util.getQueryString();
+
+        }
+
+    }
+
+
     // 쿠키값을 리턴해주는 메소드. Document.cookie는 모든 쿠키가 저장되어 있는데
     // IndexOf()로 시작 위치를 찾고 len으로 길이 찾고 end지점 찾아서 리턴해줘
-    // 쿠키매니저도 웹뷰용. 쿠키 직접 만들어보기.
-    public String getCookie() {
+    // 리턴할 때 '키=값'이런 형식으로 리턴
+    public static String getCookie(String name) {
 
         if(Scinable.cookieEnabled) {
 
             // cookieEnabled가 true인 상태면 SharedPreferences에 쿠키가 있는 상태니까
             // 찾아서 뽑아주기만 하면 돼, js코드는 과정이 조금 긴데 간단하게 할 수 있을 듯.
 
+            // 위에 주석이 처음 한 생각, cookie라는 변수를 Scinable에 만들었고,
+            // 그걸 쿠키로 써. SharedPreferences는 데이터를 서버에 전송할 때 쓰기.
+            // 사용자가 이미 SharedPreferences쓰면서 쿠키의 역할(자동로그인 같은거)을 하고 있는
+            // 상황은 추후에 생각하기.
+
+            int start = Scinable.cookie.indexOf(name + "=");
+            int len = start + name.length() + 1; // indexOf()하면 1 적게 출력
+
+            // 만약 입력값이 문자열에 없다면 리턴 값은 -1이다.
+            if(start == -1) {
+
+                return "";
+
+            }
+
+            // len번째 인덱스부터 ";"이 가장 빨리 나오는 인덱스 번호
+            int end = Scinable.cookie.indexOf(";", len);
+
+            if(end == -1) {
+
+                // 쿠키의 마지막은 세미콜론 없이 끝나기 때문에 세미콜론이 보이지 않으면
+                // 쿠키전체의 길이가 찾고있는 값의 마지막 부분
+                end = Scinable.cookie.length();
+
+            }
+
+            return cookie.substring(len,end); // unescape()함수 무시 -> 디코딩 함수
+
         } else {
 
             return "";
 
         }
+
     }
 
 
     // 쿠키 생성 메소드. 생성할 쿠키의 이름, 쿠키의 값, 만료시간 세 개가 파라미터
     // expires는 밀리초시간으로 들어옴. 만료 시간을 받음.
-    public void setCookie(String name, String value, long expires) {
+    public static void setCookie(String name, String value, long expires) {
 
         // escape()함수 더이상 사용 안함, encodeURI()나 encodeURIComponent() 사용할 것.
         // 두 함수 모두 위에 구현해놓음.
@@ -305,11 +351,14 @@ public class Util {
 
         Scinable.cookie = str;
 
+        // 쿠키 만들었으니까 cookieEnabled 활성화.
+        cookieEnabled = true;
+
     }
 
 
     // 위 함수에서 세 번째 파라미터가 존재하지 않을 때
-    public void setCookie(String name, String value) {
+    public static void setCookie(String name, String value) {
 
         String str = name + "=" + encodeURI(value) + ";";
 
@@ -327,7 +376,7 @@ public class Util {
 
     // Math.round : 입력값을 반올림 한 수와 가장 가까운 정수값을 출력합니다.
     // Math.random : 0 이상 1 미만의 부동소숫점 의사 난수를 출력합니다.
-    public long createUUID() {
+    public static long createUUID() {
 
         return Math.round(2147283647 * Math.random());
 
@@ -342,58 +391,260 @@ public class Util {
 
         }
 
+        // vid가 Scinable에 등록되어 있을 때, Scinable.vid를 그대로 리턴.
         if(Scinable.vid != null) {
 
             return Scinable.vid;
 
         }
+
+        // vid가 없을 때 새로 생성함과 동시에 Scinable.vid에 등록하고 그대로 리턴.
+        // 이렇게 하면 문제는 없지 않나
         else {
 
-            if(cookieEnabled) { // 쿠키 사용부분. 수정 필요
+            // getParameter가 필요하고 getParameter는 getQueryString이 필요한데
+            // getQueryString이 페이지 URL의 쿼리를 반환하는거기 때문에
+            // 안드로이드에서 구현 불가. 대체할 것인지 없앨 것인지 추후에 생각하고
+            // 간단하게 작성해놓음.
+            /*
+            if(cookieEnabled) {
 
-                return getUid();
+                // this.getUid() 이 부분 이해안됨. 함수호출했는데 리턴받는 변수가 없음.
+
+                String cv = Util.getCookie("___cv"); // "___cv=..." 뽑아옴.
+                String[] cvArr = {};
+                String cookieCampaign = "";
+                String cookieChannel = "";
+
+                if(cv != null) {
+
+                    cvArr = cv.split(".");
+
+                    if(cvArr.length > 2) {
+
+                        cookieCampaign = cvArr[2];
+
+                    }
+
+                    if(cvArr.length > 5) {
+
+                        cookieChannel = cvArr[5];
+
+                    }
+
+                }
+
+                String sciCampaign;
+
+                if(Scinable.campaign != null) {
+
+                    sciCampaign = Scinable.campaign;
+
+                } else {
+
+                    sciCampaign = Util.getParameter(Param.eciCampaign);
+
+                }
+
+            }
+            */
+
+
+            ////////////////
+            // new visit
+            //////////////// 이부분만 사용
+            String cv = Util.getCookie("___cv"); // 쿠키를 가져오기
+            String[] cvArr = {}; // 모름
+            String cookieCampaign = ""; // 모름
+            String cookieChannel = ""; // 모름
+
+            // cv는 "___cv=value" 형태.
+            if (cv == null) {
+
+                // update cu(visit date, frequency)
+                Scinable.frequency = Integer.toString(Integer.parseInt(Scinable.frequency) + 1);
+                Util.setCU(Scinable.uid, Util.today(), Scinable.frequency);
+
+                // create cv
+                Scinable.vid = Long.toString(Util.createUUID());
+                Scinable.visitTime = new Date().getTime();
+                Scinable.pageView = 1;
+                Scinable.newVisit = 1;
+
+                // sciCampaign이랑 sciChannel 나오는거 일단 문자열로 대충 처리.
+                cv = Scinable.vid + "." + Scinable.preVisitDate + "." + "sciCampaign" + "."
+                        + Scinable.visitTime + ".1." + "sciChannel";
+
+            } else {
+
+                Scinable.vid = cvArr[0];
 
             }
 
-            return getUid();
-
         }
 
-    }
+    } // 일단 넘김.
 
 
     public static String getUid() {
 
-        return "";
+        if (Scinable.offline == "off") {
+
+            return null;
+
+        }
+
+        if (Scinable.uid != null) {
+
+            return Scinable.uid;
+
+        } else {
+
+            if (cookieEnabled == true) {
+
+                String[] cuArr = Util.getCU();
+
+                Scinable.uid = cuArr[0];
+                Scinable.preVisitDate = cuArr[1];
+                Scinable.frequency = cuArr[2];
+
+                return Scinable.uid;
+
+            } else {
+
+                Scinable.uid = Long.toString(Util.createUUID());
+                Scinable.preVisitDate = Util.today();
+                Scinable.frequency = "0";
+
+                return Scinable.uid;
+
+            }
+        }
+    }
+
+
+    public static String[] getCU() {
+
+        boolean needSet = false;
+
+        String[] cuArr = {};
+        String cu = Util.getCookie("___cu");
+
+        if(cu != null) {
+
+            cuArr = cu.split("."); // cu를 split
+
+            if(cuArr.length == 3) { // split한 요소가 3개일 때
+
+                if(!Util.isNumeric(cuArr[0])) {
+
+                    needSet = true;
+                    cuArr[0] = Long.toString(Util.createUUID());
+
+                }
+
+                if(!Util.isNumeric(cuArr[1])) {
+
+                    needSet = true;
+                    cuArr[1] = Util.today();
+
+                }
+
+                if(!Util.isNumeric(cuArr[2])) {
+
+                    needSet = true;
+                    cuArr[2] = "1";
+
+                }
+
+            } else { // split한 요소가 3개가 아닐 때,
+
+                needSet = true;
+                cuArr[0] = (Long.toString(Util.createUUID()));
+                cuArr[1] = Util.today();
+                cuArr[2] = "1";
+
+            }
+
+        } else { // cu가 없을 때
+
+            needSet = true;
+            cuArr[0] = (Long.toString(Util.createUUID()));
+            cuArr[1] = Util.today();
+            cuArr[2] = "1";
+
+        }
+
+        if(needSet) { // 위의 if문들에 해당되는게 없으면 needSet은 false인 상태
+
+            Util.setCU(cuArr[0], cuArr[1], cuArr[2]);
+
+        }
+
+        return cuArr;
 
     }
 
 
-    public String getCU() {
+    public static String setCU(String uid, String cday, String freq) {
 
-        return "";
+        if(!Util.isNumeric(uid)) {
 
-    }
+            uid = Long.toString(Util.createUUID());
 
+        }
 
-    public String setCU() {
+        if(!Util.isNumeric(cday)) {
 
-        return "";
+            cday = Util.today();
+
+        }
+
+        if(!Util.isNumeric(freq)) {
+
+            freq = "1";
+
+        }
+
+        String cu = uid + "." + cday + "." + freq;
+
+        Util.setCookie("___cu", cu, Config.cuExpire);
+
+        return cu;
 
     }
 
 
     public String getCK() {
 
-        return "";
+        if(Scinable.ck != null) {
 
-    } // getVid()부터 여기까지 다 이어진 부분. 보류.
+            return Scinable.ck;
+
+        } else {
+
+            String ck = "";
+            String cc = Util.getCookie("___cc");
+            String[] carr = cc.split(".");
+
+            if(carr.length == 4) {
+
+                ck = carr[0];
+
+            }
+
+            Scinable.ck = ck;
+            return ck;
+
+        }
+
+    }
 
 
     // parseFloat() : 문자열을 실수로 변환
     // isNaN() : 매개변수가 숫자인지 검사하는 함수
     // isFinite() : 변수가 유한한지 검사하는 함수
-    public boolean isNumeric(String val) {
+    public static boolean isNumeric(String val) {
 
         float f = Float.parseFloat(val);
         // Double.isFinite()는 SDK version 24 이상부터 사용가능.
@@ -457,7 +708,51 @@ public class Util {
 
 
     // Cookie 있는 부분 보류
-    public void setR() {
+    public void setR(String cname, String val, Long expire) {
+
+        String c = Util.getCookie(cname);
+
+        if(c != null) {
+
+            String[] cs = c.split(".");
+
+
+            if(cs.length > 10) {
+
+                // sc.js에서 shift()함수로 cs 배열의 첫번째 요소를 제거하는데 Java로 이를 구현하기
+                // 위해서 ArrayList를 사용한다.
+                List<String> list = new ArrayList<>(Arrays.asList(cs));
+                list.remove(0);
+                cs = list.toArray(new String[list.size()]);
+
+            }
+
+            // sc.js에서 push()함수로 배열의 마지막 요소에 val을 추가한다. 이를 구현하기 위해서
+            // ArrayList를 사용한다.
+            List<String> list = new ArrayList<>(Arrays.asList(cs));
+            list.add(val);
+            cs = list.toArray(new String[list.size()]);
+            // c = String.join(".",list); join함수 쓰려면 API레벨26 이상이어야 가능.
+
+            // join함수 대신 반복문으로 구현
+            for (int i = 0; i < cs.length; i++) {
+
+                c += cs[i] + ".";
+
+            }
+
+            // c에서 마지막 "."을 삭제해줘야한다.
+            StringBuffer c1 = new StringBuffer(c);
+            c1.deleteCharAt(c.length()-1);
+            c = c1.toString(); // 문자열의 마지막 문자를 삭제한 후 c로 반환
+
+        } else {
+
+            c = val;
+
+        }
+
+        Util.setCookie(cname,c,expire);
 
     }
 

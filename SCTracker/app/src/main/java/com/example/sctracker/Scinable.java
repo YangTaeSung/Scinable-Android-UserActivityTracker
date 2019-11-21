@@ -2,11 +2,17 @@ package com.example.sctracker;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.graphics.ColorSpace;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Scinable {
@@ -27,14 +33,15 @@ public class Scinable {
     public static String domainName = null;
     public static String uid = null;
     public static String vid = null;
-    private static String ck = null;
-    private static String campaign = "";
-    private static String channel = "";
-    private static String preVisitDate = null;
-    private static String frequency = null;
-    private static int newVisit = 0;
+    public static String ck = null;
+    public static String campaign = "";
+    public static String channel = "";
+    public static String preVisitDate = null;
+    public static String frequency = null;
+    public static int newVisit = 0;
     public static String offline = "";
-    private static int pageView = 1;
+    public static int pageView = 1;
+    public static long visitTime;
 
 
     // customField는 객체로 정의해 놓음
@@ -58,7 +65,7 @@ public class Scinable {
     }
 
 
-    public String getOrderdata() {
+    public static String getOrderdata() {
 
         if(debug) {
 
@@ -88,6 +95,43 @@ public class Scinable {
         }
 
         return "";
+
+    }
+
+
+    public static String getMemberData() {
+
+        if(Scinable.debug == false) {
+
+            if(Trans.type == "C") {
+
+                String cz = Util.getCookie("___cz");
+
+                if(Trans.member[0] == cz) {
+
+                    return null;
+
+                } else {
+
+                    Util.setCookie("___cz", Trans.member[0], Config.czExpire);
+
+                }
+
+            }
+
+        }
+
+        // 두 배열의 요소들을 arr배열에 통합한다.
+        // sc.js의 concat함수 구현
+        String arr[];
+        String[] rowArr = {Trans.type};
+        List<String> list = new ArrayList(Arrays.asList(rowArr));
+        list.addAll(Arrays.asList(Trans.member));
+        arr = list.toArray(new String[list.size()]);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String jstr = "{\"type\":\"member\", \"data\":" + JSON.stringify(arr)
 
     }
 
@@ -217,11 +261,10 @@ public class Scinable {
             Locale.getDefault().toString()          ---> en_US
             Locale.getDefault().getDisplayLanguage()---> English
             */
-            Locale.getDefault().getDisplayLanguage();
+            return Locale.getDefault().getDisplayLanguage();
 
         }
 
     }
-
 
  }
