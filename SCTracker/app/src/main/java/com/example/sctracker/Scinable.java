@@ -1,6 +1,7 @@
 package com.example.sctracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.ColorSpace;
 
@@ -12,6 +13,7 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,9 +45,8 @@ public class Scinable {
     public static int pageView = 1;
     public static long visitTime;
 
+    public static HashMap<String, String> customField = new HashMap<>();
 
-    // customField는 객체로 정의해 놓음
-    // private static ArrayList<String> customField = new ArrayList<>();
 
     /* request와 관련된 함수 */
     // 의미 파악 후 Activity와 연관짓기
@@ -65,7 +66,7 @@ public class Scinable {
     }
 
 
-    public static String getOrderdata() {
+    public static String getOrderData() {
 
         if(debug) {
 
@@ -77,7 +78,7 @@ public class Scinable {
 
             } else {
 
-                Util.setCookie("___cz",Trans.order[0], Config.czExpire)
+                Util.setCookie("___cz",Trans.order[0], Config.czExpire);
 
             }
 
@@ -129,9 +130,35 @@ public class Scinable {
         list.addAll(Arrays.asList(Trans.member));
         arr = list.toArray(new String[list.size()]);
 
-        ObjectMapper mapper = new ObjectMapper();
+        // stringify()는 ["John","Peter","Sally","Jane"] 이런 형태로 출력.
+        // 위와같은 형태로 출력하려면 Arrays.toString()
+        String jstr = "{\"type\":\"member\", \"data\":" + Arrays.toString(arr) + "}";
 
-        String jstr = "{\"type\":\"member\", \"data\":" + JSON.stringify(arr)
+        return jstr;
+
+    }
+
+
+    public static String getClaimData() {
+
+        String[] arr = {};
+        List<String> arrlist =new ArrayList(Arrays.asList(arr));
+
+        for(int i = 0; i < Trans.claim.length; ++i) {
+
+            String[] rowArr = {Trans.type};
+            List<String> list = new ArrayList(Arrays.asList(rowArr));
+            list.addAll(Arrays.asList(Trans.claim[i]));
+            rowArr = list.toArray(new String[list.size()]);
+            arrlist.addAll(Arrays.asList(rowArr));
+
+        }
+
+        arr = arrlist.toArray(new String[arrlist.size()]);
+
+        String jstr = "{\"type\":\"claim\", \"data\":" + Arrays.toString(arr) + "}";
+
+        return jstr;
 
     }
 
@@ -151,7 +178,7 @@ public class Scinable {
 
     // 아래 getPreVisitDate() 함수에서 frequency와 preVisitDate값이 같은 타입이어야 하기 때문에
     // frequency변수도 String으로 바꿈.
-    public String getFreq() {
+    public static String getFreq() {
 
         if (Scinable.frequency != null) {
 
@@ -176,7 +203,7 @@ public class Scinable {
     }
 
 
-    public String getPreVisitDate() {
+    public static String getPreVisitDate() {
 
         if(Scinable.preVisitDate != null) {
 
@@ -213,15 +240,14 @@ public class Scinable {
 
             // 현재 액티비티 정보가 Access.url에 저장되어 있지 않을 때
             // js에서는 함수가 존재하여 그것을 이용
-            return getClass().getName();
+            return getClass().getSimpleName();
 
         }
 
     }
 
 
-    // 웹에서는 url과 title 두 가지를 요구. url은 액티비티 이름으로 대체했으나
-    // title은 미정.
+    // 웹에서는 url과 title 두 가지를 요구. url은 없고 title은 클래스이름 출력
     public String getPageTitle() {
 
         if(Access.title != null) {
@@ -229,7 +255,7 @@ public class Scinable {
             return Access.title;
 
         } else {
-            return "";
+            return getClass().getName();
         }
 
     }
@@ -237,14 +263,14 @@ public class Scinable {
 
     // 링크를 통해 현재 페이지로 이동 시킨, 전 페이지의 URI 정보를 반환.
     // 구현할 필요 없을 듯. 일단 넘김.
-    public void getReferrer() {
+    public static void getReferrer() {
 
         String referrer = "";
 
     }
 
 
-    public String getLang() {
+    public static String getLang() {
 
         if(Scinable.language != null) {
 
