@@ -1,31 +1,31 @@
 package com.example.sctracker;
 
-// Scinable.Event에서 add속성은 변수, stop속성은 함수, 의미해석 아예 안된 상황, evt변수 global 부분 모름.
+
+// 이벤트 생성을 JavaScript처럼 함수로 만들 수 있는가
 public class Event extends Scinable {
 
-        String add = ""; // variable 'add' is supposed that string type
+    public void add(String element, String type, String func) {
 
-        if (window.addEventListener) {
-            add = GoAddEventListener(type, func, false);
-        } else {
-            add = GoAttachEvent(element, type, func);
-        }
+        // 넘김
 
-    public String GoAddEventListener (String type, String func,boolean tf){
-        return element.addEventListner(type, func, false);
     }
 
-    public String GoAttachEvent(String element, String type, String func) {
-        return element.attachEvent("on" + type, func);
-    }
 
     public void Stop(String event) {
-        String evt = event; // Global variable?
+
+        String evt = event; // || window.event 모름
+
         if(evt.stopPropagation) {
+
             evt.stopPropagation();
+
         }
-        else
+        else {
+
             evt.cancelBubble = true;
+
+        }
+
     }
 
 }
