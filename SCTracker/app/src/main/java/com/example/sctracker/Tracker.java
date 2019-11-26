@@ -69,6 +69,7 @@ public class Tracker extends Activity {
 
 
     // access
+    // 이게 불리면 SharedPreferences에 쌓여있던 데이터들을 서버에 정보 보내
     public void _trackPageview() {
         if(!Scinable.cookieEnabled) {
             return;

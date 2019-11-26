@@ -2,8 +2,11 @@ package com.example.sctracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.ColorSpace;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -14,25 +17,33 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class Scinable {
+public class Scinable extends AppCompatActivity {
+
+    // _scq의 push 순서대로 작업을 처리하기 위해 LinkedHashMap 사용
+    // 일반적인 HashMap의 경우에는 순서가 보장되지 못한다.
+    public static String[] valueArray = {};
+    public static Map<String, String[]> _scq = new LinkedHashMap<>();
+
+    // SharedPreferences 사용하여 데이터 일시 저장
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor scinableEditor = sharedPreferences.edit();
 
     // "_host"는 ECIntelligence or 서버
     public static String _host = "localhost:8080";
 
     public static String cookie = null; // *
     public static boolean cookieEnabled = false;
-    // SharedPreferences로 아이디 정보 저장한 후 cookieEnabled가 필요할때마다
-    // 해당하는 아이디값을 검색해서 확인하는 메소드를 만들어서 true,false에 변화를 주던지 아예 없애던지
-    private static String scinableObject = "_scq"; //
     private static ArrayList<String> _scq = new ArrayList<>(); //
 
     public static String accountId = "";
     public static String language = null;
     public static boolean debug = false;
-    public static String domainName = null;
+    // public static String domainName = null;
     public static String uid = null;
     public static String vid = null;
     public static String ck = null;
@@ -46,6 +57,12 @@ public class Scinable {
     public static long visitTime;
 
     public static HashMap<String, String> customField = new HashMap<>();
+
+
+
+
+    public static _setPage()
+
 
 
     /* request와 관련된 함수 */
@@ -263,11 +280,12 @@ public class Scinable {
 
     // 링크를 통해 현재 페이지로 이동 시킨, 전 페이지의 URI 정보를 반환.
     // 구현할 필요 없을 듯. 일단 넘김.
-    public static void getReferrer() {
+    /* public static void getReferrer() {
 
         String referrer = "";
+        return "";
 
-    }
+    } */
 
 
     public static String getLang() {

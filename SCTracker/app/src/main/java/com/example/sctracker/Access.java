@@ -13,15 +13,5 @@ public class Access {
     public static String cgc = ""; // conversion goal custom
 
 
-    public void callback(String result) {
-
-        if(result != null) {
-
-            // 콜백함수 이해안됨.
-
-        }
-
-    }
-
-
 }
+

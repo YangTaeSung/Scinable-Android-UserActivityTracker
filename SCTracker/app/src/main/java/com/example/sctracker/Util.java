@@ -75,43 +75,25 @@ public class Util {
 
 
     // 브라우저의 버전을 리턴하는 함수. Android sdk의 버전을 출력해야 하는가
-    public int msie() {
+    /*public int msie() {
 
         return 0;
 
-    }
+    }*/
 
 
     // createXMLHttp : XMLHttpRequest() 객체를 생성.
     // 정상적으로 생성되면 객체를 리턴. 아래의 함수에서 객체가 존재하면 open, send함
-    public void readScriptFile(String src) {
+    // JS에서 XMLHttpRequest는 Android에서 HTTPURLConnection이나 OKHTTP등이 있다고 함.
+    /* public void readScriptFile(String src) {
 
-        /*
-        var xh = Scinable.Ajax.createXMLHttp();
-                    if (!xh) {
-                        console.log("couldn't create XMLHttpRequest.");
-                        return;
-                    }
-                    xh.onreadystatechange = function() {
-                        if (xh.readyState == 4) {
-                            if (xh.status != 200) {
-                                console.log("Error : status is not 200." + xh.status)
-                                return;
-                            }
-                            (0, eval)(xh.responseText);
-                        }
-                    };
-                    xh.open("GET", src, true);
-                    xh.send();
-         */
-
-    }
+    } */
 
 
     // HTMLElement.offsetWidth 읽기 전용 속성은 정수로 요소의 레이아웃 폭을 돌려줍니다.
     // var intElemOffsetWidth = element.offsetWidth;
     // element가 HTML요소로 예상됨.
-    public int elementWidth() {
+    /* public int elementWidth() {
 
         if(msie() < 10) {
 
@@ -124,7 +106,7 @@ public class Util {
 
         }
 
-    }
+    } */
 
 
     public String trim(String value) {
@@ -324,6 +306,9 @@ public class Util {
         // 두 함수 모두 위에 구현해놓음.
         String str = name + "=" + encodeURI(value) + ";";
 
+        /* 앱 내에서 도메인과 경로는 쓰이지 않기 때문에
+         쿠키의 형태는 "이름=값;만료시간=만료시간"
+
         if(Scinable.domainName != null) {
 
             str += " domain=" + Scinable.domainName + ";";
@@ -331,6 +316,8 @@ public class Util {
         }
 
         str += " path=/";
+
+         */
 
         if(expires != 0) {
 
@@ -397,62 +384,21 @@ public class Util {
             return Scinable.vid;
 
         }
-
         // vid가 없을 때 새로 생성함과 동시에 Scinable.vid에 등록하고 그대로 리턴.
         // 이렇게 하면 문제는 없지 않나
         else {
 
             // getParameter가 필요하고 getParameter는 getQueryString이 필요한데
             // getQueryString이 페이지 URL의 쿼리를 반환하는거기 때문에
-            // 안드로이드에서 구현 불가. 대체할 것인지 없앨 것인지 추후에 생각하고
-            // 간단하게 작성해놓음.
+            // 안드로이드에서 구현 불가.
+            // 간단하게 Scinable.vid가 있으면 그대로 쓰고 없으면 createUUID로 만듦.
+            // 만들면서 pageView나 newVisit이나 활성화시켜줌
+            // ___cv쓰는거는 일단 넘김
             /*
-            if(cookieEnabled) {
-
-                // this.getUid() 이 부분 이해안됨. 함수호출했는데 리턴받는 변수가 없음.
-
-                String cv = Util.getCookie("___cv"); // "___cv=..." 뽑아옴.
-                String[] cvArr = {};
-                String cookieCampaign = "";
-                String cookieChannel = "";
-
-                if(cv != null) {
-
-                    cvArr = cv.split(".");
-
-                    if(cvArr.length > 2) {
-
-                        cookieCampaign = cvArr[2];
-
-                    }
-
-                    if(cvArr.length > 5) {
-
-                        cookieChannel = cvArr[5];
-
-                    }
-
-                }
-
-                String sciCampaign;
-
-                if(Scinable.campaign != null) {
-
-                    sciCampaign = Scinable.campaign;
-
-                } else {
-
-                    sciCampaign = Util.getParameter(Param.eciCampaign);
-
-                }
-
-            }
-            */
-
 
             ////////////////
             // new visit
-            //////////////// 이부분만 사용
+            ////////////////
             String cv = Util.getCookie("___cv"); // 쿠키를 가져오기
             String[] cvArr = {}; // 모름
             String cookieCampaign = ""; // 모름
@@ -472,8 +418,8 @@ public class Util {
                 Scinable.newVisit = 1;
 
                 // sciCampaign이랑 sciChannel 나오는거 일단 문자열로 대충 처리.
-                cv = Scinable.vid + "." + Scinable.preVisitDate + "." + "sciCampaign" + "."
-                        + Scinable.visitTime + ".1." + "sciChannel";
+                cv = Scinable.vid + "." + Scinable.preVisitDate + "."
+                        + Scinable.visitTime
 
             } else {
 
