@@ -38,7 +38,6 @@ public class Scinable extends AppCompatActivity {
 
     public static String cookie = null; // *
     public static boolean cookieEnabled = false;
-    private static ArrayList<String> _scq = new ArrayList<>(); //
 
     public static String accountId = "";
     public static String language = null;

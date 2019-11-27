@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.sctracker.Scinable.cookie;
+import static com.example.sctracker.Scinable.cookieEnabled;
 import static com.example.sctracker.Scinable.visitTime;
 import static com.example.sctracker.Util.encodeURIComponent;
 
@@ -24,13 +26,13 @@ public class Tracker extends Activity {
     }
 
 
-    public void _setAccount(String p) {
+    public static void _setAccount(String p) {
 
         Scinable.accountId = p;
 
     }
 
-
+    /* 도메인 사용 안함
     public void _setDomainName(String p) {
 
         if(p.split(".").length-1 == 1) {
@@ -45,6 +47,7 @@ public class Tracker extends Activity {
         }
 
     }
+    */
 
 
     public void _setLanguage(String p) {
@@ -186,6 +189,96 @@ public class Tracker extends Activity {
         }
 
         String req
+
+    }
+
+
+    public static void _setCampaignParameter(String p) {
+
+        Param.campaign = p;
+
+    }
+
+
+    public static void _setOffline() {
+
+        Scinable.offline = "off";
+
+    }
+
+
+    public static void _setCampaign(String p) {
+
+        Scinable.campaign = p;
+
+    }
+
+    /* Url 사용 안함
+    public static void _setPageUrl(String p) {
+
+        Access.url = p;
+
+    }
+    */
+
+
+    /* 페이지 타이틀을 액티비티 이름으로 대체할 것인가 고민.
+    public static void _setPageTitle(String p) {
+
+        Access.title = p;
+
+    }
+    */
+
+
+    public static void _setPage(String url, String title, String id, String groupId, String type) {
+
+        Access.url = url;
+        Access.title = title;
+        Access.id = id;
+        Access.groupid = groupId;
+        Access.type = type;
+
+    }
+
+    public static void _setPage(String id, String groupId) {
+
+        Access.id = id;
+        Access.groupid = groupId;
+
+    }
+
+
+    public static void _setCustomVar(String[] arguments) {
+
+        // 배열의 요소는 네 개를 받음.
+        // 쿠키로 등록하기 전 인자로 받은 배열 요소는 [ 회원ID.해당생년월일그룹.성별.등급 ] 의 형식
+        if(cookieEnabled = true) {
+
+            String con = "";
+
+            for(int i = 0; i < arguments.length; i++) {
+
+                switch(i) {
+                    case 0:
+                        con = arguments[i];
+                    case 1:
+                        con = con + "." + Util.getAgeGroupKey(arguments[i]);
+                    default:
+                        con = con + "." + arguments[i];
+
+                }
+
+            }
+
+            Util.setCookie("___cc", con, Config.ccExpire);
+
+        }
+
+    }
+
+    public static void _setConversion(int coonversionId, int opt_conversionValue) {
+
 
     }
 

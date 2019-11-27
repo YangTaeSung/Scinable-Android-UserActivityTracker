@@ -425,11 +425,13 @@ public class Util {
 
                 Scinable.vid = cvArr[0];
 
-            }
+            } */
 
         }
 
     } // 일단 넘김.
+
+
 
 
     public static String getUid() {
@@ -608,7 +610,7 @@ public class Util {
     // Date() 객체를 생성 시 매개변수를 지정하지 않으면 생성 당시를 기준으로 Date 객체가 생성됩니다.
     // Math.floor() : 주어진 숫자와 같거나 작은 정수 중에서 가장 큰 수를 반환합니다.
     // 매개변수 birthday는 8자리 숫자로 입력합니다.
-    public int getAge(String birthday) {
+    public static int getAge(String birthday) {
 
         Calendar calendar = Calendar.getInstance();
 
@@ -624,7 +626,7 @@ public class Util {
     }
 
 
-    public int getAgeGroupKey(String birthday) {
+    public static int getAgeGroupKey(String birthday) {
 
         if(!isNumeric(birthday)) {
             return 0;
