@@ -563,7 +563,7 @@ public class Util {
     }
 
 
-    public String getCK() {
+    public static String getCK() {
 
         if(Scinable.ck != null) {
 
@@ -656,7 +656,7 @@ public class Util {
 
 
     // Cookie 있는 부분 보류
-    public void setR(String cname, String val, Long expire) {
+    public static void setR(String cname, String val, Long expire) {
 
         String c = Util.getCookie(cname);
 
