@@ -9,23 +9,4 @@ public class Event extends Scinable {
         // 넘김
 
     }
-
-
-    public void Stop(String event) {
-
-        String evt = event; // || window.event 모름
-
-        if(evt.stopPropagation) {
-
-            evt.stopPropagation();
-
-        }
-        else {
-
-            evt.cancelBubble = true;
-
-        }
-
-    }
-
 }

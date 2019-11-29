@@ -31,10 +31,8 @@ public class Util {
         href는 일반적인 페이지 이동시 이용을 하면 되고,
         replace의 경우는 이전페이지로 접근이 필요없는경우 보안상 덮어씌우는 것도 괜찮을듯 하다.
         */
-        // 현재 액티비티에서 매개변수로 받은 액티비티로 전환
 
-        Intent intent = new Intent(PresentActivity.this, NextActivity.class);
-        startActivity(intent);
+        // 현재 액티비티에서 매개변수로 받은 액티비티로 전환?
 
     }
 
@@ -150,6 +148,7 @@ public class Util {
     replace의 대체되어야 하는 문자열 표현들 ex) \s+ 는 공백, \d+ 는 숫자
     예와 같은 의미들이 있을 것 같은데 모르기 떄문에 일단은 문자 그대로 표현해놓음
     */
+    /*
     public String adjustCss(String val, String suggest) {
 
         String val1 = null;
@@ -205,6 +204,7 @@ public class Util {
 
     }
 
+    */
 
     public static String paramValues;
 
@@ -239,6 +239,7 @@ public class Util {
 
     }
 
+    /*
 
     public String getParameter(String name) {
 
@@ -250,6 +251,7 @@ public class Util {
 
     }
 
+    */
 
     // 쿠키값을 리턴해주는 메소드. Document.cookie는 모든 쿠키가 저장되어 있는데
     // IndexOf()로 시작 위치를 찾고 len으로 길이 찾고 end지점 찾아서 리턴해줘
@@ -428,6 +430,8 @@ public class Util {
             } */
 
         }
+
+        return "";
 
     } // 일단 넘김.
 

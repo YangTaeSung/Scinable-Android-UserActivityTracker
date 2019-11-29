@@ -20,18 +20,104 @@ import static com.example.sctracker.Util.encodeURIComponent;
 
 public class Tracker extends Activity {
 
-    public void _setDebug(boolean p) {
 
-        Scinable.debug = p;
+    // trackViewPage가 호출되었을 때 일괄적으로 서버에 전송하기 위한 플래그
+    public static boolean needsDomReady = false;
+
+
+    // 변수 하나만 받는건 이거로 받으면 안돼
+    protected void tracking(String key, String[] value) {
+
+        if(key.equals("_setAccount")) {
+
+            _setAccount(value);
+
+        } else if(key.equals("_setDebug")) {
+
+            _setDebug(value);
+
+        } else if(key.equals("_setLanguage")) {
+
+            _setLanguage(value);
+
+        } else if(key.equals("_setSessionCookieTimeout")) {
+
+            _setSessionCookieTimeout(value);
+
+        } else if(key.equals("_setVisitorCookieTimeout")) {
+
+            _setVisitorCookieTimeout(value);
+
+        } else if(key.equals("_setCampaignParameter")) {
+
+            _setCampaignParameter(value);
+
+        } else if(key.equals("_setOffline")) {
+
+            _setOffline(value);
+
+        } else if(key.equals("_setCampaign")) {
+
+            _setCampaign(value);
+
+        } else if(key.equals("_setCustomVar")) {
+
+            _setCustomVar(value);
+
+        } else if(key.equals("_setConversion")) {
+
+            _setConversion(value);
+
+        } else if(key.equals("_addTrans")) {
+
+            _addTrans(value);
+
+        } else if(key.equals("_addItem")) {
+
+            _addItem(value);
+
+        } else if(key.equals("_addMember")) {
+
+            _addMember(value);
+
+        } else if(key.equals("_cancelMember")) {
+
+            _cancelMember(value);
+
+        } else if(key.equals("_addClaim")) {
+
+            _addClaim(value);
+
+        } else if(key.equals("_trackCart")) {
+
+            _trackCart(value);
+
+        } else if(key.equals("_trackFavorite")) {
+
+            _trackFavorite(value);
+
+        } else if(key.equals("_trackEvent")) {
+
+            _trackEvent(value);
+
+        } else return;
 
     }
 
 
-    public static void _setAccount(String p) {
+    public static void _setAccount(String... p) {
 
-        Scinable.accountId = p;
+        Scinable.accountId = p[0];
 
     }
+
+
+    public void _setDebug(String... p) {
+
+        Scinable.debug = Boolean.valueOf(p[0]);
+
+    }
+
 
     /* 도메인 사용 안함
     public void _setDomainName(String p) {
@@ -51,32 +137,36 @@ public class Tracker extends Activity {
     */
 
 
-    public void _setLanguage(String p) {
+    public void _setLanguage(String... p) {
 
-        Scinable.language = p;
-
-    }
-
-
-    public void _setSessionCookieTimeout(long timeout) {
-
-        Config.cvExpire = timeout;
-        Config.czExpire = timeout;
+        Scinable.language = p[0];
 
     }
 
 
-    public void _setVisitorCookieTimeout(long timeout) {
-        Config.cuExpire = timeout;
-        Config.ccExpire = timeout;
+    public void _setSessionCookieTimeout(String... timeout) {
+
+        Config.cvExpire = Long.parseLong(timeout[0]);
+        Config.czExpire = Long.parseLong(timeout[0]);
+
+    }
+
+
+    public void _setVisitorCookieTimeout(String... timeout) {
+
+        Config.cuExpire = Long.parseLong(timeout[0]);
+        Config.ccExpire = Long.parseLong(timeout[0]);
+
     }
 
 
     // access
-    // 이게 불리면 SharedPreferences에 쌓여있던 데이터들을 서버에 정보 보내
-    public void _trackPageview() {
+    protected void _trackPageview() {
+
         if(!Scinable.cookieEnabled) {
+
             return;
+
         }
 
         String vid = Util.getVid();
@@ -98,15 +188,15 @@ public class Tracker extends Activity {
 
         String json = "";
 
-        if(Trans.order.length > 0) {
+        if(Trans.order.size() > 0) {
 
             json = Scinable.getOrderData();
 
-        } else if(Trans.member.length > 0) {
+        } else if(Trans.member.size() > 0) {
 
             json = Scinable.getMemberData();
 
-        } else if(Trans.claim.length > 0) {
+        } else if(Trans.claim.size() > 0) {
 
             json = Scinable.getClaimData();
 
@@ -131,8 +221,8 @@ public class Tracker extends Activity {
                             "&ua=", "", /* userAgent속성은 브라우저가 서버로 보낸 사용자 에이전트 헤더를 반환합니다.*/
                             "&p=", scinable.getPageUrl(), /* pageUrl 안씀 */
                             "&dt=", encodeURIComponent(scinable.getPageTitle()),
-                            "&cgk=", Access.cgk,
-                            "&cgv=", Access.cgv,
+                            "&cgk=", Integer.toString(Access.cgk),
+                            "&cgv=", Integer.toString(Access.cgv),
                             "&cgc=", Util.encodeURIComponent(Access.cgc),
                             "&pid=", Util.encodeURIComponent(Access.id),
                             "&pgid=", Util.encodeURIComponent(Access.groupid),
@@ -183,10 +273,16 @@ public class Tracker extends Activity {
         // join함수 : 배열의 항목들을 String으로 이어붙임.
         String url = join(urlarr,"");
 
+        /*
+                        if(needsDomReady == true) {
+                            Request 부분 필요
+                        }
+        */
+
     }
 
 
-    // join함수가 없기 때문에 직접 구현
+    // join함수가 직접 구현
     public static String join(String[] arr, String div) {
 
         String result = "";
@@ -210,9 +306,9 @@ public class Tracker extends Activity {
     }
 
 
-    public static void _setCampaignParameter(String p) {
+    public static void _setCampaignParameter(String... p) {
 
-        Param.campaign = p;
+        Param.campaign = p[0];
 
     }
 
@@ -224,9 +320,9 @@ public class Tracker extends Activity {
     }
 
 
-    public static void _setCampaign(String p) {
+    public static void _setCampaign(String... p) {
 
-        Scinable.campaign = p;
+        Scinable.campaign = p[0];
 
     }
 
@@ -270,25 +366,26 @@ public class Tracker extends Activity {
     // 원래 매개변수는 배열형식으로 받지만 임의로 다수의 String 형식으로 받도록 구현.
     // 2번째, 4번째 매개변수는 선택적. 선택하지 않을 때 사용자는 공백("")을 입력한다고 가정
     // 쿠키로 등록하기 전 인자로 받은 배열 요소는 [ 회원ID.해당생년월일그룹.성별.등급 ] 의 형식
-    public static void _setCustomVar(String customerId, String birthDate, String gender, String customerLevel) {
+    // (String customerId, String birthDate, String gender, String customerLevel)
+    public static void _setCustomVar(String... p) {
 
         if(cookieEnabled = true) {
 
             String con = "";
 
-            con = customerId; // 1st
+            con = p[0]; // 1st
 
-            if(birthDate != "") {
+            if(p[1] != "") {
 
-                con += "." + Util.getAgeGroupKey(birthDate); // 2nd
+                con += "." + Util.getAgeGroupKey(p[1]); // 2nd
 
             }
 
-            con += "." + gender; // 3rd
+            con += "." + p[2]; // 3rd
 
-            if(customerLevel != "") {
+            if(p[3] != "") {
 
-                con += "." + customerLevel; // 4th
+                con += "." + p[3]; // 4th
 
             }
 
@@ -304,17 +401,18 @@ public class Tracker extends Activity {
     // reserveList가 없을 경우 ""로 매개변수 전달
     // js에서는 opt_conversionValue가 Option으로 나타나지만
     // 유인물에서는 필수항목으로 정의됨. 필수항목으로 작성
-    public static void _setConversion(int conversionId, int opt_conversionValue, String reserveList1, String reserveList2, String reserveList3, String reserveList4, String reserveList5) {
+    // (int conversionId, int opt_conversionValue, String reserveList1, String reserveList2, String reserveList3, String reserveList4, String reserveList5)
+    public static void _setConversion(String... p) {
 
-        Access.cgk = conversionId; // 1st
+        Access.cgk = Integer.parseInt(p[0]); // 1st
 
-        if(opt_conversionValue != 0) {
+        if(Integer.parseInt(p[1]) != 0) {
 
-            Access.cgv = opt_conversionValue; // 2nd
+            Access.cgv = Integer.parseInt(p[1]); // 2nd
 
         }
 
-        String[] reserveList = {reserveList1, reserveList2, reserveList3, reserveList4, reserveList5};
+        String[] reserveList = {p[2], p[3], p[4], p[5], p[6]};
 
         String cgcList = "";
 
@@ -336,7 +434,7 @@ public class Tracker extends Activity {
         }
 
         Access.cgc = cgcList;
-        Util.setR("___cvc",Integer.toString(conversionId),Config.cvExpire);
+        Util.setR("___cvc", p[0],Config.cvExpire);
 
     }
 
@@ -351,66 +449,68 @@ public class Tracker extends Activity {
 
     // shopId, payType, customId, adress, opt_customSet은 선택옵션
     // 선택옵션이 선택되지 않았을 경우 공백("")을 입력받는 것으로 가정한다.
-    public static void _addTrans(String orderId, String shopId, String payType, int totalItemPrice, int totalItemCost, int totalAmount, String customerId, String address, String opt_customSet1, String opt_customSet2, String opt_customSet3, String opt_customSet4, String opt_customSet5) {
+    // (String orderId, String shopId, String payType, int totalItemPrice, int totalItemCost, int totalAmount, String customerId, String address,
+    //   String opt_customSet1, String opt_customSet2, String opt_customSet3, String opt_customSet4, String opt_customSet5)
+    public static void _addTrans(String... p) {
 
         Trans.type = "C";
-        Trans.order.add(orderId);
+        Trans.order.add(p[0]);
 
-        if(shopId != "") {
+        if(p[1] != "") {
 
-            Trans.order.add(shopId);
-
-        }
-
-        if(payType != "") {
-
-            Trans.order.add(payType);
+            Trans.order.add(p[1]);
 
         }
 
-        Trans.order.add(Integer.toString(totalItemPrice));
-        Trans.order.add(Integer.toString(totalItemCost));
-        Trans.order.add(Integer.toString(totalAmount));
+        if(p[2] != "") {
 
-        if(customerId != "") {
-
-            Trans.order.add(customerId);
+            Trans.order.add(p[2]);
 
         }
 
-        if(address != "") {
+        Trans.order.add(p[3]);
+        Trans.order.add(p[4]);
+        Trans.order.add(p[5]);
 
-            Trans.order.add(address);
+        if(p[6] != "") {
 
-        }
-
-        if(opt_customSet1 != "") {
-
-            Trans.order.add(opt_customSet1);
+            Trans.order.add(p[6]);
 
         }
 
-        if(opt_customSet2 != "") {
+        if(p[7] != "") {
 
-            Trans.order.add(opt_customSet2);
-
-        }
-
-        if(opt_customSet3 != "") {
-
-            Trans.order.add(opt_customSet3);
+            Trans.order.add(p[7]);
 
         }
 
-        if(opt_customSet4 != "") {
+        if(p[8] != "") {
 
-            Trans.order.add(opt_customSet4);
+            Trans.order.add(p[8]);
 
         }
 
-        if(opt_customSet5 != "") {
+        if(p[9] != "") {
 
-            Trans.order.add(opt_customSet5);
+            Trans.order.add(p[9]);
+
+        }
+
+        if(p[10] != "") {
+
+            Trans.order.add(p[10]);
+
+        }
+
+        if(p[11] != "") {
+
+            Trans.order.add(p[11]);
+
+        }
+
+        if(p[12] != "") {
+
+            Trans.order.add(p[12]);
 
         }
 
@@ -419,68 +519,73 @@ public class Tracker extends Activity {
 
     // name, category, itemShopId, opt_customSet, opt_itemGroupId는 선택항목.
     // 선택항목을 선택하지 않았을 경우 사용자는 공백 ("")을 입력한다고 가정한다.
-    public static void _addItem(String subOrderId, String itemId, String name, String category, String itemShopId, int count, int unitPrice, int unitCost, int price, int cost, String opt_customSet1, String opt_customSet2, String opt_customSet3, String opt_customSet4, String opt_customSet5, String opt_itemGroupId) {
+    // (String subOrderId, String itemId, String name, String category,
+    //   String itemShopId, int count, int unitPrice, int unitCost, int price,
+    //   int cost, String opt_customSet1, String opt_customSet2,
+    //   String opt_customSet3, String opt_customSet4, String opt_customSet5,
+    //   String opt_itemGroupId)
+    public static void _addItem(String... p) {
 
-        Trans.items.add(subOrderId);
-        Trans.items.add(itemId);
+        Trans.items.add(p[0]);
+        Trans.items.add(p[1]);
 
-        if(name != "") {
+        if(p[2] != "") {
 
-            Trans.items.add(name);
-
-        }
-
-        if(category != "") {
-
-            Trans.items.add(category);
-
-        }
-
-        if(itemShopId != "") {
-
-            Trans.items.add(itemShopId);
+            Trans.items.add(p[2]);
 
         }
 
-        Trans.items.add(Integer.toString(count));
-        Trans.items.add(Integer.toString(unitPrice));
-        Trans.items.add(Integer.toString(unitCost));
-        Trans.items.add(Integer.toString(price));
-        Trans.items.add(Integer.toString(cost));
+        if(p[3] != "") {
 
-        if(opt_customSet1!= "") {
-
-            Trans.items.add(opt_customSet1);
+            Trans.items.add(p[3]);
 
         }
 
-        if(opt_customSet2 != "") {
+        if(p[4] != "") {
 
-            Trans.items.add(opt_customSet2);
-
-        }
-
-        if(opt_customSet3 != "") {
-
-            Trans.items.add(opt_customSet3);
+            Trans.items.add(p[4]);
 
         }
 
-        if(opt_customSet4 != "") {
+        Trans.items.add(p[5]);
+        Trans.items.add(p[6]);
+        Trans.items.add(p[7]);
+        Trans.items.add(p[8]);
+        Trans.items.add(p[9]);
 
-            Trans.items.add(opt_customSet4);
+        if(p[10] != "") {
+
+            Trans.items.add(p[10]);
 
         }
 
-        if(opt_customSet5 != "") {
+        if(p[11] != "") {
 
-            Trans.items.add(opt_customSet5);
+            Trans.items.add(p[11]);
 
         }
 
-        if(opt_itemGroupId != "") {
+        if(p[12] != "") {
 
-            Trans.items.add(opt_itemGroupId);
+            Trans.items.add(p[12]);
+
+        }
+
+        if(p[13] != "") {
+
+            Trans.items.add(p[13]);
+
+        }
+
+        if(p[14] != "") {
+
+            Trans.items.add(p[14]);
+
+        }
+
+        if(p[15] != "") {
+
+            Trans.items.add(p[15]);
 
         }
 
@@ -489,176 +594,178 @@ public class Tracker extends Activity {
 
     // customerId와 mailYn만 필수
     // 선택적인 항목은 공백("")입력 시 선택하지 않은 것으로 가정
-    public static void _addMember(String customerId, String address, String gender, String birthDate,
-                                  String customerLevel, String email, String lastName, String firstName,
-                                  String mailYn, String opt_customSet1, String opt_customSet2,
-                                  String opt_customSet3, String opt_customSet4, String opt_customSet5) {
+    // (String customerId, String address, String gender, String birthDate,
+    //  String customerLevel, String email, String lastName, String firstName,
+    //  String mailYn, String opt_customSet1, String opt_customSet2,
+    //  String opt_customSet3, String opt_customSet4, String opt_customSet5)
+    public static void _addMember(String... p) {
 
         Trans.type = "C";
 
-        Trans.member.add(customerId);
+        Trans.member.add(p[0]);
 
-        if(address != "") {
+        if(p[1] != "") {
 
-            Trans.member.add(address);
-
-        }
-
-        if(gender != "") {
-
-            Trans.member.add(gender);
+            Trans.member.add(p[1]);
 
         }
 
-        if(birthDate != "") {
+        if(p[2] != "") {
 
-            Trans.member.add(birthDate);
-
-        }
-
-        if(customerLevel != "") {
-
-            Trans.member.add(customerLevel);
+            Trans.member.add(p[2]);
 
         }
 
-        if(email != "") {
+        if(p[3] != "") {
 
-            Trans.member.add(email);
-
-        }
-
-        if(lastName != "") {
-
-            Trans.member.add(lastName);
+            Trans.member.add(p[3]);
 
         }
 
-        if(firstName != "") {
+        if(p[4] != "") {
 
-            Trans.member.add(firstName);
+            Trans.member.add(p[4]);
 
         }
 
-        Trans.member.add(mailYn);
+        if(p[5] != "") {
+
+            Trans.member.add(p[5]);
+
+        }
+
+        if(p[6] != "") {
+
+            Trans.member.add(p[6]);
+
+        }
+
+        if(p[7] != "") {
+
+            Trans.member.add(p[7]);
+
+        }
+
+        Trans.member.add(p[8]);
 
         Trans.member.add("1");
 
-        if(opt_customSet1 != "") {
+        if(p[9] != "") {
 
-            Trans.member.add(opt_customSet1);
-
-        }
-
-        if(opt_customSet2 != "") {
-
-            Trans.member.add(opt_customSet2);
+            Trans.member.add(p[9]);
 
         }
 
-        if(opt_customSet3 != "") {
+        if(p[10] != "") {
 
-            Trans.member.add(opt_customSet3);
-
-        }
-
-        if(opt_customSet4 != "") {
-
-            Trans.member.add(opt_customSet4);
+            Trans.member.add(p[10]);
 
         }
 
-        if(opt_customSet5 != "") {
+        if(p[11] != "") {
 
-            Trans.member.add(opt_customSet5);
+            Trans.member.add(p[11]);
+
+        }
+
+        if(p[12] != "") {
+
+            Trans.member.add(p[12]);
+
+        }
+
+        if(p[13] != "") {
+
+            Trans.member.add(p[13]);
 
         }
 
     }
 
 
-    public static void _updateMember(String customerId, String address, String gender, String birthDate,
-                                     String customerLevel, String email, String lastName, String firstName,
-                                     String mailYn, String opt_customSet1, String opt_customSet2,
-                                     String opt_customSet3, String opt_customSet4, String opt_customSet5) {
+    // (String customerId, String address, String gender, String birthDate,
+    //  String customerLevel, String email, String lastName, String firstName,
+    //  String mailYn, String opt_customSet1, String opt_customSet2,
+    //  String opt_customSet3, String opt_customSet4, String opt_customSet5)
+    public static void _updateMember(String... p) {
 
         Trans.type = "U";
 
-        Trans.member.add(customerId);
+        Trans.member.add(p[0]);
 
-        if(address != "") {
+        if(p[1] != "") {
 
-            Trans.member.add(address);
-
-        }
-
-        if(gender != "") {
-
-            Trans.member.add(gender);
+            Trans.member.add(p[1]);
 
         }
 
-        if(birthDate != "") {
+        if(p[2] != "") {
 
-            Trans.member.add(birthDate);
-
-        }
-
-        if(customerLevel != "") {
-
-            Trans.member.add(customerLevel);
+            Trans.member.add(p[2]);
 
         }
 
-        if(email != "") {
+        if(p[3] != "") {
 
-            Trans.member.add(email);
-
-        }
-
-        if(lastName != "") {
-
-            Trans.member.add(lastName);
+            Trans.member.add(p[3]);
 
         }
 
-        if(firstName != "") {
+        if(p[4] != "") {
 
-            Trans.member.add(firstName);
+            Trans.member.add(p[4]);
 
         }
 
-        Trans.member.add(mailYn);
+        if(p[5] != "") {
+
+            Trans.member.add(p[5]);
+
+        }
+
+        if(p[6] != "") {
+
+            Trans.member.add(p[6]);
+
+        }
+
+        if(p[7] != "") {
+
+            Trans.member.add(p[7]);
+
+        }
+
+        Trans.member.add(p[8]);
 
         Trans.member.add("1");
 
-        if(opt_customSet1 != "") {
+        if(p[9] != "") {
 
-            Trans.member.add(opt_customSet1);
-
-        }
-
-        if(opt_customSet2 != "") {
-
-            Trans.member.add(opt_customSet2);
+            Trans.member.add(p[9]);
 
         }
 
-        if(opt_customSet3 != "") {
+        if(p[10] != "") {
 
-            Trans.member.add(opt_customSet3);
-
-        }
-
-        if(opt_customSet4 != "") {
-
-            Trans.member.add(opt_customSet4);
+            Trans.member.add(p[10]);
 
         }
 
-        if(opt_customSet5 != "") {
+        if(p[11] != "") {
 
-            Trans.member.add(opt_customSet5);
+            Trans.member.add(p[11]);
+
+        }
+
+        if(p[12] != "") {
+
+            Trans.member.add(p[12]);
+
+        }
+
+        if(p[13] != "") {
+
+            Trans.member.add(p[13]);
 
         }
 
@@ -802,16 +909,20 @@ public class Tracker extends Activity {
                         "&aid=", Scinable.accountId
                 };
 
-                List<String> list = new ArrayList<>(Arrays.asList(url));
-                list.add("&at=" + arg.get(0)); // cart, favorite
+                List<String> urllist = new ArrayList<>(Arrays.asList(url));
+                urllist.add("&at=" + arg.get(0)); // cart, favorite
 
-                if(arg.size() >= 2) {
+                // sendItems의 매개변수 arg는 _trackFavorite함수나 _trackCart함수에서 매개변수로 받은 목록이다.
+                // 2개의 항목은 필수로 입력된다. [cart || favorite],[add || delete]
+                // 원래 js코드에서는 매개변수를 받는 두 가지 방법에 대한 구현이 모두 있는데
+                // 우선 한가지만 구현
+                if(arg.size() >= 2) { // if문은 사실 의미 없음. 추후에 다른 방법의 구현을 위해 사용
 
-                    list.add("&ct=" + arg.get(1)); // calltype
+                    urllist.add("&ct=" + arg.get(1)); // calltype
 
                     ArrayList<String> items = new ArrayList<>();
 
-                    // 현재 arg의 "items" 요소는 js에서 arr로 옮겨간 상황
+                    // 현재 arg의 "items" 요소는 js코드 상에서 arr로 옮겨간 상황
                     // 안드로이드 상에서 "items" 요소만 빼내서 구현할 수 없기 때문에
                     // arr를 사용하지 않음. 그래서 for문의 i는 3부터 시작
                     // arr[0]은 cart/favorite, arr[1]은 action
@@ -821,18 +932,77 @@ public class Tracker extends Activity {
                     for(int i = 3; i < arg.size(); i++) {
 
                         items.add(";");
-                        items.add(arg.get(i));
+                        items.add(encodeURIComponent(arg.get(i)));
 
                     }
 
-                    list.add("&its=" + items.join(""));
+                    urllist.add("&its=" + join(items.toArray(new String[items.size()]),""));
 
                 }
 
-                list.add(entry.getKey());
-                list.add("=");
-                list.add(Util.encodeURIComponent(cp));
-                urlarr = list.toArray(new String[list.size()]);
+                String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
+
+                /*
+                        if(needsDomReady == true) {
+                            Request 부분 필요
+                        }
+                 */
+            }
+
+        }
+
+    }
+
+
+    public static int eventCnt = 0;
+
+    public static void _trackEvent(String category, String action, String opt_label, int opt_value) {
+
+        if(cookieEnabled) {
+
+            if(++eventCnt < 10) {
+
+                String[] url = {
+
+                        //document.location.protocol=="https:"?"https://":"http://",
+                        //Scinable.Config.host,
+                        //Scinable.Access.Config.uri,
+                        "?vid=", Util.getVid(),
+                        "&uid=", Util.getUid(),
+                        //"&ua=", encodeURIComponent(navigator.userAgent),
+                        //'&p=', encodeURIComponent(Scinable.getPageUrl()),
+                        //'&dt=', encodeURIComponent(Scinable.getPageTitle()),
+                        "&nv=", Integer.toString(Scinable.newVisit),
+                        //'&hn=', encodeURIComponent(document.domain),
+                        "&aid=", Scinable.accountId,
+                        "&at=", "event"
+
+                };
+
+                List<String> urllist = new ArrayList<>(Arrays.asList(url));
+
+                urllist.add("&e1=" + encodeURIComponent(category));
+                urllist.add("&e2=" + encodeURIComponent(action));
+
+                if(opt_label != "") {
+
+                    urllist.add("&e1=" + encodeURIComponent(opt_label));
+
+                }
+
+                if(opt_value != 0) {
+
+                    urllist.add("&e1=" + encodeURIComponent(Integer.toString(opt_value)));
+
+                }
+
+                String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
+
+                /*
+                        if(needsDomReady == true) {
+                            Request 부분 필요
+                        }
+                 */
 
             }
 

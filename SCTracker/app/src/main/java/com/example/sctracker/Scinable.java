@@ -26,8 +26,8 @@ public class Scinable extends AppCompatActivity {
 
     // _scq의 push 순서대로 작업을 처리하기 위해 LinkedHashMap 사용
     // 일반적인 HashMap의 경우에는 순서가 보장되지 못한다.
-    public static String[] valueArray = {};
-    public static Map<String, String[]> _scq = new LinkedHashMap<>();
+    public static String[] _scq = {};
+    //public static Map<String, String[]> _scq = new LinkedHashMap<>();
 
     // SharedPreferences 사용하여 데이터 일시 저장
     SharedPreferences sharedPreferences;
@@ -42,7 +42,7 @@ public class Scinable extends AppCompatActivity {
     public static String accountId = "";
     public static String language = null;
     public static boolean debug = false;
-    // public static String domainName = null;
+    public static String domainName = null;
     public static String uid = null;
     public static String vid = null;
     public static String ck = null;
@@ -56,13 +56,6 @@ public class Scinable extends AppCompatActivity {
     public static long visitTime;
 
     public static HashMap<String, String> customField = new HashMap<>();
-
-
-
-
-    public static _setPage()
-
-
 
     /* request와 관련된 함수 */
     // 의미 파악 후 Activity와 연관짓기
@@ -88,21 +81,21 @@ public class Scinable extends AppCompatActivity {
 
             String cz = Util.getCookie("___cz");
 
-            if(Trans.order[0] == cz) {
+            if(Trans.order.get(0) == cz) {
 
                 return "";
 
             } else {
 
-                Util.setCookie("___cz",Trans.order[0], Config.czExpire);
+                Util.setCookie("___cz",Trans.order.get(0), Config.czExpire);
 
             }
 
             String[] arr;
-            int orderLength = Trans.order.length;
-            int itemsLength = Trans.items.length;
+            int orderLength = Trans.order.size();
+            int itemsLength = Trans.items.size();
 
-            for ( int i = 0; i < Trans.items.length; ++i) {
+            for ( int i = 0; i < Trans.items.size(); ++i) {
 
                 String[] rowArr = {Trans.type};
                 /* 이후 concat() 메소드를 실행하면 Array 속 자료형이 다름. 넘김.*/
@@ -124,13 +117,13 @@ public class Scinable extends AppCompatActivity {
 
                 String cz = Util.getCookie("___cz");
 
-                if(Trans.member[0] == cz) {
+                if(Trans.member.get(0) == cz) {
 
                     return null;
 
                 } else {
 
-                    Util.setCookie("___cz", Trans.member[0], Config.czExpire);
+                    Util.setCookie("___cz", Trans.member.get(0), Config.czExpire);
 
                 }
 
@@ -143,7 +136,7 @@ public class Scinable extends AppCompatActivity {
         String arr[];
         String[] rowArr = {Trans.type};
         List<String> list = new ArrayList(Arrays.asList(rowArr));
-        list.addAll(Arrays.asList(Trans.member));
+        list.addAll(Trans.member);
         arr = list.toArray(new String[list.size()]);
 
         // stringify()는 ["John","Peter","Sally","Jane"] 이런 형태로 출력.
@@ -160,11 +153,11 @@ public class Scinable extends AppCompatActivity {
         String[] arr = {};
         List<String> arrlist =new ArrayList(Arrays.asList(arr));
 
-        for(int i = 0; i < Trans.claim.length; ++i) {
+        for(int i = 0; i < Trans.claim.size(); ++i) {
 
             String[] rowArr = {Trans.type};
             List<String> list = new ArrayList(Arrays.asList(rowArr));
-            list.addAll(Arrays.asList(Trans.claim[i]));
+            list.addAll(Arrays.asList(Trans.claim.get(i)));
             rowArr = list.toArray(new String[list.size()]);
             arrlist.addAll(Arrays.asList(rowArr));
 

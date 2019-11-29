@@ -26,10 +26,5 @@ public class Suggest {
     // window.Scinable[suggestionObjectPostfix] = suggest; 이부분 모름. 넘김.
     public static String suggestionObjectName = "Scinable." + suggestionObjectPostfix;
 
-    public void createArea() {
-
-        String o =
-
-    }
 
 }
