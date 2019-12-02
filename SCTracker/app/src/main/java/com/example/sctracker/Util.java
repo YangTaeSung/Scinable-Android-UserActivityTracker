@@ -46,6 +46,7 @@ public class Util {
 
     }
 
+
     public static String encodeURIComponent(String val) {
 
         String result = null;
@@ -304,44 +305,50 @@ public class Util {
     // expires는 밀리초시간으로 들어옴. 만료 시간을 받음.
     public static void setCookie(String name, String value, long expires) {
 
-        // escape()함수 더이상 사용 안함, encodeURI()나 encodeURIComponent() 사용할 것.
-        // 두 함수 모두 위에 구현해놓음.
-        String str = name + "=" + encodeURI(value) + ";";
+        // cookieEnabled같은 경우에 js에서는 document에서 자동으로 확인
+        // 여기서는 직접 설정을 구현해야함. ( SharedPreferences 확인 및 이용 )
+        if(cookieEnabled) {
+            // escape()함수 더이상 사용 안함, encodeURI()나 encodeURIComponent() 사용할 것.
+            // 두 함수 모두 위에 구현해놓음.
+            String str = name + "=" + encodeURI(value) + ";";
 
-        /* 앱 내에서 도메인과 경로는 쓰이지 않기 때문에
-         쿠키의 형태는 "이름=값;만료시간=만료시간"
+             /*
 
-        if(Scinable.domainName != null) {
+            if(Scinable.domainName != null) {
 
-            str += " domain=" + Scinable.domainName + ";";
+               str += " domain=" + Scinable.domainName + ";";
+
+            }
+
+            str += " path=/";
+
+            앱 내에서 도메인과 경로는 쓰이지 않기 때문에 쿠키의 형태는 " 이름=값;만료시간=만료시간 "
+
+            */
+
+            if (expires != 0) {
+
+                // 1970년 1월 1일 기준부터 지금까지의 밀리초시간을 구하고 만료시간을 더한다.
+                // 더한 값으로 날짜를 계산하여 str 변수에 추가한다.
+                /* 1970/1/1 이후로의 시간을 밀리초로 계산
+                 * System.currentTimeMillis();
+                 * 출력 형식 GMTString
+                 * toGMTString()메소드 안드로이드에서 사용 불가
+                 * 포맷으로 형식 지정 */
+
+                SimpleDateFormat format1 = new SimpleDateFormat("E, d MMM yyyy hh:mm:ss GMT");
+                Calendar calendar = Calendar.getInstance();
+                expires += calendar.getTimeInMillis(); // 현재시간 밀리초값을 만료시간과 더하기
+                Date timegmt = new Date(expires); // 해당 밀리초값을 날짜로 변환
+                str += "; expires=" + format1.format(timegmt);
+
+            }
+
+            Scinable.cookie = str;
+
+            // " 이름=값;만료시간=만료시간 "의 형태로 쿠키 생성
 
         }
-
-        str += " path=/";
-
-         */
-
-        if(expires != 0) {
-
-            // 1970년 1월 1일 기준부터 지금까지의 밀리초시간을 구하고 만료시간을 더한다.
-            // 더한 값으로 날짜를 계산하여 str 변수에 추가한다.
-            /* 1970/1/1 이후로의 시간을 밀리초로 계산
-             * System.currentTimeMillis();
-             * 출력 형식 GMTString
-             * toGMTString()메소드 안드로이드에서 사용 불가
-             * 포맷으로 형식 지정 */
-            SimpleDateFormat format1 = new SimpleDateFormat("E, d MMM yyyy hh:mm:ss GMT");
-            Calendar calendar = Calendar.getInstance();
-            expires += calendar.getTimeInMillis(); // 현재시간 밀리초값을 만료시간과 더하기
-            Date timegmt = new Date(expires); // 해당 밀리초값을 날짜로 변환
-            str += "; expires=" + format1.format(timegmt);
-
-        }
-
-        Scinable.cookie = str;
-
-        // 쿠키 만들었으니까 cookieEnabled 활성화.
-        cookieEnabled = true;
 
     }
 
@@ -351,6 +358,7 @@ public class Util {
 
         String str = name + "=" + encodeURI(value) + ";";
 
+        /*
         if (Scinable.domainName != null) {
 
             str += " domain=" + Scinable.domainName + ";";
@@ -358,8 +366,10 @@ public class Util {
         }
 
         str += " path=/";
+         */
 
         Scinable.cookie = str;
+
     }
 
 
@@ -376,7 +386,7 @@ public class Util {
 
         if(Scinable.offline == "off") {
 
-            return ""; // 모호한 부분. js에서는 return 0; 형태. 임의로 지정
+            return null; // 모호한 부분. js에서는 return 0; 형태. 임의로 null 지정
 
         }
 
@@ -387,24 +397,35 @@ public class Util {
 
         }
         // vid가 없을 때 새로 생성함과 동시에 Scinable.vid에 등록하고 그대로 리턴.
-        // 이렇게 하면 문제는 없지 않나
-        else {
+        else{
+            if(cookieEnabled) {
+                // getParameter가 필요하고 getParameter는 getQueryString이 필요한데
+                // getQueryString이 페이지 URL의 쿼리를 반환하는거기 때문에
+                // 안드로이드에서 구현 불가.
+                // 간단하게 Scinable.vid가 있으면 그대로 쓰고 없으면 createUUID로 만듦.
+                // 만들면서 pageView나 newVisit이나 활성화시켜줌
+                // ___cv쓰는거는 일단 넘김
 
-            // getParameter가 필요하고 getParameter는 getQueryString이 필요한데
-            // getQueryString이 페이지 URL의 쿼리를 반환하는거기 때문에
-            // 안드로이드에서 구현 불가.
-            // 간단하게 Scinable.vid가 있으면 그대로 쓰고 없으면 createUUID로 만듦.
-            // 만들면서 pageView나 newVisit이나 활성화시켜줌
-            // ___cv쓰는거는 일단 넘김
+                String cv = Util.getCookie("___cv");
+                String[] cvArr = {};
+                String cookieCampaign = "";
+                String cookieChannel = "";
+
+                if(cv != null) {
+
+
+
+                }
+
             /*
 
             ////////////////
             // new visit
             ////////////////
             String cv = Util.getCookie("___cv"); // 쿠키를 가져오기
-            String[] cvArr = {}; // 모름
-            String cookieCampaign = ""; // 모름
-            String cookieChannel = ""; // 모름
+            String[] cvArr = {};
+            String cookieCampaign = "";
+            String cookieChannel = "";
 
             // cv는 "___cv=value" 형태.
             if (cv == null) {
@@ -429,6 +450,7 @@ public class Util {
 
             } */
 
+            }
         }
 
         return "";

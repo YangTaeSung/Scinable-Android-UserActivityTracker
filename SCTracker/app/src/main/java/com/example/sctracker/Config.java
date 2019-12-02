@@ -14,5 +14,4 @@ public class Config extends Scinable {
     public static long ccExpire = 63072000000L; // 2years(2 * 365 * 24 * 60 * 1000)
     public static long czExpire = 63072000000L;
 
-
 }

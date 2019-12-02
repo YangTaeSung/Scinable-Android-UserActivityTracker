@@ -1,12 +1,10 @@
 package com.example.sctracker;
 
 
-// 이벤트 생성을 JavaScript처럼 함수로 만들 수 있는가
 public class Event extends Scinable {
 
     public void add(String element, String type, String func) {
 
-        // 넘김
-
     }
+
 }

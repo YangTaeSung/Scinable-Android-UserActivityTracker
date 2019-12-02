@@ -33,7 +33,7 @@ public class Scinable extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor scinableEditor = sharedPreferences.edit();
 
-    // "_host"는 ECIntelligence or 서버
+    // "_host"는 ECIntelligence 서버
     public static String _host = "localhost:8080";
 
     public static String cookie = null; // *

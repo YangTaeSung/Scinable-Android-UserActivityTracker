@@ -6,9 +6,6 @@ public class Realtime {
 
         if(result != null) {
 
-            // eval부분
-            // 한 번 호출. 넘김
-
         }
 
     }

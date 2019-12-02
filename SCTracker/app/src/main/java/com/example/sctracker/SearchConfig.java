@@ -8,5 +8,4 @@ public class SearchConfig {
     String callback = "getSearch";
     boolean cache = true;
 
-
 }

@@ -20,83 +20,83 @@ import static com.example.sctracker.Util.encodeURIComponent;
 
 public class Tracker extends Activity {
 
-
     // trackViewPage가 호출되었을 때 일괄적으로 서버에 전송하기 위한 플래그
     public static boolean needsDomReady = false;
 
 
     // 변수 하나만 받는건 이거로 받으면 안돼
-    protected void tracking(String key, String[] value) {
+    // value[0]은 function name, value[1]부터 value값
+    protected void tracking(String[] value) {
 
-        if(key.equals("_setAccount")) {
+        if(value[0].equals("_setAccount")) {
 
             _setAccount(value);
 
-        } else if(key.equals("_setDebug")) {
+        } else if(value[0].equals("_setDebug")) {
 
             _setDebug(value);
 
-        } else if(key.equals("_setLanguage")) {
+        } else if(value[0].equals("_setLanguage")) {
 
             _setLanguage(value);
 
-        } else if(key.equals("_setSessionCookieTimeout")) {
+        } else if(value[0].equals("_setSessionCookieTimeout")) {
 
             _setSessionCookieTimeout(value);
 
-        } else if(key.equals("_setVisitorCookieTimeout")) {
+        } else if(value[0].equals("_setVisitorCookieTimeout")) {
 
             _setVisitorCookieTimeout(value);
 
-        } else if(key.equals("_setCampaignParameter")) {
+        } else if(value[0].equals("_setCampaignParameter")) {
 
             _setCampaignParameter(value);
 
-        } else if(key.equals("_setOffline")) {
+        } else if(value[0].equals("_setOffline")) {
 
             _setOffline(value);
 
-        } else if(key.equals("_setCampaign")) {
+        } else if(value[0].equals("_setCampaign")) {
 
             _setCampaign(value);
 
-        } else if(key.equals("_setCustomVar")) {
+        } else if(value[0].equals("_setCustomVar")) {
 
             _setCustomVar(value);
 
-        } else if(key.equals("_setConversion")) {
+        } else if(value[0].equals("_setConversion")) {
 
             _setConversion(value);
 
-        } else if(key.equals("_addTrans")) {
+        } else if(value[0].equals("_addTrans")) {
 
             _addTrans(value);
 
-        } else if(key.equals("_addItem")) {
+        } else if(value[0].equals("_addItem")) {
 
             _addItem(value);
 
-        } else if(key.equals("_addMember")) {
+        } else if(value[0].equals("_addMember")) {
 
             _addMember(value);
 
-        } else if(key.equals("_cancelMember")) {
+        } else if(value[0].equals("_cancelMember")) {
 
             _cancelMember(value);
 
-        } else if(key.equals("_addClaim")) {
+        } else if(value[0].equals("_addClaim")) {
 
             _addClaim(value);
 
-        } else if(key.equals("_trackCart")) {
+        } else if(value[0].equals("_trackCart")) {
 
             _trackCart(value);
 
-        } else if(key.equals("_trackFavorite")) {
+        } else if(value[0].equals("_trackFavorite")) {
 
             _trackFavorite(value);
 
-        } else if(key.equals("_trackEvent")) {
+        } else if(value[0].equals("_trackEvent")) {
 
             _trackEvent(value);
 
@@ -107,14 +107,14 @@ public class Tracker extends Activity {
 
     public static void _setAccount(String... p) {
 
-        Scinable.accountId = p[0];
+        Scinable.accountId = p[1];
 
     }
 
 
     public void _setDebug(String... p) {
 
-        Scinable.debug = Boolean.valueOf(p[0]);
+        Scinable.debug = Boolean.valueOf(p[1]);
 
     }
 
@@ -139,23 +139,23 @@ public class Tracker extends Activity {
 
     public void _setLanguage(String... p) {
 
-        Scinable.language = p[0];
+        Scinable.language = p[1];
 
     }
 
 
     public void _setSessionCookieTimeout(String... timeout) {
 
-        Config.cvExpire = Long.parseLong(timeout[0]);
-        Config.czExpire = Long.parseLong(timeout[0]);
+        Config.cvExpire = Long.parseLong(timeout[1]);
+        Config.czExpire = Long.parseLong(timeout[1]);
 
     }
 
 
     public void _setVisitorCookieTimeout(String... timeout) {
 
-        Config.cuExpire = Long.parseLong(timeout[0]);
-        Config.ccExpire = Long.parseLong(timeout[0]);
+        Config.cuExpire = Long.parseLong(timeout[1]);
+        Config.ccExpire = Long.parseLong(timeout[1]);
 
     }
 
@@ -273,11 +273,12 @@ public class Tracker extends Activity {
         // join함수 : 배열의 항목들을 String으로 이어붙임.
         String url = join(urlarr,"");
 
-        /*
-                        if(needsDomReady == true) {
-                            Request 부분 필요
-                        }
-        */
+        if(needsDomReady == true) {
+
+            SCQ sendData = SCQ.getInstance();
+            sendData.run(url);
+
+        }
 
     }
 
@@ -308,12 +309,13 @@ public class Tracker extends Activity {
 
     public static void _setCampaignParameter(String... p) {
 
-        Param.campaign = p[0];
+        Param.campaign = p[1];
 
     }
 
 
-    public static void _setOffline() {
+    // 매개변수를 사용하지 않지만 가변인자는 매개변수없이 호출해도 상관없음.
+    public static void _setOffline(String... p) {
 
         Scinable.offline = "off";
 
@@ -322,7 +324,7 @@ public class Tracker extends Activity {
 
     public static void _setCampaign(String... p) {
 
-        Scinable.campaign = p[0];
+        Scinable.campaign = p[1];
 
     }
 
@@ -373,19 +375,19 @@ public class Tracker extends Activity {
 
             String con = "";
 
-            con = p[0]; // 1st
+            con = p[1]; // 1st
 
-            if(p[1] != "") {
+            if(p[2] != "") {
 
-                con += "." + Util.getAgeGroupKey(p[1]); // 2nd
+                con += "." + Util.getAgeGroupKey(p[2]); // 2nd
 
             }
 
-            con += "." + p[2]; // 3rd
+            con += "." + p[3]; // 3rd
 
-            if(p[3] != "") {
+            if(p[4] != "") {
 
-                con += "." + p[3]; // 4th
+                con += "." + p[4]; // 4th
 
             }
 
@@ -404,15 +406,15 @@ public class Tracker extends Activity {
     // (int conversionId, int opt_conversionValue, String reserveList1, String reserveList2, String reserveList3, String reserveList4, String reserveList5)
     public static void _setConversion(String... p) {
 
-        Access.cgk = Integer.parseInt(p[0]); // 1st
+        Access.cgk = Integer.parseInt(p[1]); // 1st
 
-        if(Integer.parseInt(p[1]) != 0) {
+        if(Integer.parseInt(p[2]) != 0) {
 
-            Access.cgv = Integer.parseInt(p[1]); // 2nd
+            Access.cgv = Integer.parseInt(p[2]); // 2nd
 
         }
 
-        String[] reserveList = {p[2], p[3], p[4], p[5], p[6]};
+        String[] reserveList = {p[3], p[4], p[5], p[6], p[7]};
 
         String cgcList = "";
 
@@ -434,7 +436,7 @@ public class Tracker extends Activity {
         }
 
         Access.cgc = cgcList;
-        Util.setR("___cvc", p[0],Config.cvExpire);
+        Util.setR("___cvc", p[1],Config.cvExpire);
 
     }
 
@@ -454,13 +456,7 @@ public class Tracker extends Activity {
     public static void _addTrans(String... p) {
 
         Trans.type = "C";
-        Trans.order.add(p[0]);
-
-        if(p[1] != "") {
-
-            Trans.order.add(p[1]);
-
-        }
+        Trans.order.add(p[1]);
 
         if(p[2] != "") {
 
@@ -468,15 +464,15 @@ public class Tracker extends Activity {
 
         }
 
-        Trans.order.add(p[3]);
-        Trans.order.add(p[4]);
-        Trans.order.add(p[5]);
+        if(p[3] != "") {
 
-        if(p[6] != "") {
-
-            Trans.order.add(p[6]);
+            Trans.order.add(p[3]);
 
         }
+
+        Trans.order.add(p[4]);
+        Trans.order.add(p[5]);
+        Trans.order.add(p[6]);
 
         if(p[7] != "") {
 
@@ -514,6 +510,12 @@ public class Tracker extends Activity {
 
         }
 
+        if(p[13] != "") {
+
+            Trans.order.add(p[13]);
+
+        }
+
     }
 
 
@@ -526,14 +528,8 @@ public class Tracker extends Activity {
     //   String opt_itemGroupId)
     public static void _addItem(String... p) {
 
-        Trans.items.add(p[0]);
         Trans.items.add(p[1]);
-
-        if(p[2] != "") {
-
-            Trans.items.add(p[2]);
-
-        }
+        Trans.items.add(p[2]);
 
         if(p[3] != "") {
 
@@ -547,17 +543,17 @@ public class Tracker extends Activity {
 
         }
 
-        Trans.items.add(p[5]);
+        if(p[5] != "") {
+
+            Trans.items.add(p[5]);
+
+        }
+
         Trans.items.add(p[6]);
         Trans.items.add(p[7]);
         Trans.items.add(p[8]);
         Trans.items.add(p[9]);
-
-        if(p[10] != "") {
-
-            Trans.items.add(p[10]);
-
-        }
+        Trans.items.add(p[10]);
 
         if(p[11] != "") {
 
@@ -589,6 +585,12 @@ public class Tracker extends Activity {
 
         }
 
+        if(p[16] != "") {
+
+            Trans.items.add(p[16]);
+
+        }
+
     }
 
 
@@ -602,13 +604,7 @@ public class Tracker extends Activity {
 
         Trans.type = "C";
 
-        Trans.member.add(p[0]);
-
-        if(p[1] != "") {
-
-            Trans.member.add(p[1]);
-
-        }
+        Trans.member.add(p[1]);
 
         if(p[2] != "") {
 
@@ -646,15 +642,15 @@ public class Tracker extends Activity {
 
         }
 
-        Trans.member.add(p[8]);
+        if(p[8] != "") {
 
-        Trans.member.add("1");
-
-        if(p[9] != "") {
-
-            Trans.member.add(p[9]);
+            Trans.member.add(p[8]);
 
         }
+
+        Trans.member.add(p[9]);
+
+        Trans.member.add("1");
 
         if(p[10] != "") {
 
@@ -677,6 +673,12 @@ public class Tracker extends Activity {
         if(p[13] != "") {
 
             Trans.member.add(p[13]);
+
+        }
+
+        if(p[14] != "") {
+
+            Trans.member.add(p[14]);
 
         }
 
@@ -691,13 +693,7 @@ public class Tracker extends Activity {
 
         Trans.type = "U";
 
-        Trans.member.add(p[0]);
-
-        if(p[1] != "") {
-
-            Trans.member.add(p[1]);
-
-        }
+        Trans.member.add(p[1]);
 
         if(p[2] != "") {
 
@@ -735,15 +731,15 @@ public class Tracker extends Activity {
 
         }
 
-        Trans.member.add(p[8]);
+        if(p[8] != "") {
 
-        Trans.member.add("1");
-
-        if(p[9] != "") {
-
-            Trans.member.add(p[9]);
+            Trans.member.add(p[8]);
 
         }
+
+        Trans.member.add(p[9]);
+
+        Trans.member.add("1");
 
         if(p[10] != "") {
 
@@ -769,78 +765,89 @@ public class Tracker extends Activity {
 
         }
 
+        if(p[14] != "") {
+
+            Trans.member.add(p[14]);
+
+        }
+
     }
 
 
-    public static void _cancelMember(String customerId) {
+    public static void _cancelMember(String... p) {
 
         Trans.type = "W";
-        Trans.member.add(customerId);
+        Trans.member.add(p[1]);
 
     }
 
 
-    public static void _addClaim(String orderId, String subOrderId, String claimType, String customerId, String itemId, String name, String category, int claimCount, int unitPrice, int unitCost,int price, int cost, String opt_customset1, String opt_customset2, String opt_customset3, String opt_customset4, String opt_customset5) {
+    // (String orderId, String subOrderId, String claimType, String customerId,
+    //  String itemId, String name, String category, int claimCount,
+    //  int unitPrice, int unitCost,int price, int cost, String opt_customset1,
+    //  String opt_customset2, String opt_customset3, String opt_customset4,
+    //  String opt_customset5)
+    public static void _addClaim(String... p) {
 
         Trans.type = "C";
 
-        Trans.claim.add(orderId);
-        Trans.claim.add(subOrderId);
+        Trans.claim.add(p[1]);
+        Trans.claim.add(p[2]);
 
-        if(claimType != "") {
+        if(p[3] != "") {
 
-            Trans.claim.add(claimType);
-
-        }
-
-        Trans.claim.add(customerId);
-        Trans.claim.add(itemId);
-
-        if(name != "") {
-
-            Trans.claim.add(name);
+            Trans.claim.add(p[3]);
 
         }
 
-        if(category != "") {
+        Trans.claim.add(p[4]);
+        Trans.claim.add(p[5]);
 
-            Trans.claim.add(category);
+        if(p[6] != "") {
 
-        }
-
-        Trans.claim.add(Integer.toString(claimCount));
-        Trans.claim.add(Integer.toString(unitPrice));
-        Trans.claim.add(Integer.toString(unitCost));
-        Trans.claim.add(Integer.toString(price));
-        Trans.claim.add(Integer.toString(cost));
-
-        if(opt_customset1 != "") {
-
-            Trans.claim.add(opt_customset1);
+            Trans.claim.add(p[6]);
 
         }
 
-        if(opt_customset2 != "") {
+        if(p[7] != "") {
 
-            Trans.claim.add(opt_customset2);
-
-        }
-
-        if(opt_customset3 != "") {
-
-            Trans.claim.add(opt_customset3);
+            Trans.claim.add(p[7]);
 
         }
 
-        if(opt_customset4 != "") {
+        Trans.claim.add(p[8]);
+        Trans.claim.add(p[9]);
+        Trans.claim.add(p[10]);
+        Trans.claim.add(p[11]);
+        Trans.claim.add(p[12]);
 
-            Trans.claim.add(opt_customset4);
+        if(p[13] != "") {
+
+            Trans.claim.add(p[13]);
 
         }
 
-        if(opt_customset5 != "") {
+        if(p[14] != "") {
 
-            Trans.claim.add(opt_customset5);
+            Trans.claim.add(p[14]);
+
+        }
+
+        if(p[15] != "") {
+
+            Trans.claim.add(p[15]);
+
+        }
+
+        if(p[16] != "") {
+
+            Trans.claim.add(p[16]);
+
+        }
+
+        if(p[17] != "") {
+
+            Trans.claim.add(p[17]);
 
         }
 
@@ -849,15 +856,13 @@ public class Tracker extends Activity {
 
     // 만약 가변인자 외에도 다른 매개변수가 더 있다면 가변인자는 마지막에 선언해야 한다.
     // 유인물에 하나 더 있는데 넘김.
-    public static void _trackCart(String actionType, String... itemId) {
+    public static void _trackCart(String... p) {
 
         ArrayList<String> cart = new ArrayList<>();
 
         cart.add("cart");
 
-        cart.add(actionType);
-
-        for(String s : itemId) {
+        for(String s : p) {
 
             cart.add(s);
 
@@ -869,15 +874,13 @@ public class Tracker extends Activity {
 
 
     // 유인물에 하나 더 있는데 넘김.
-    public static void _trackFavorite(String actionType, String... itemId) {
+    public static void _trackFavorite(String... p) {
 
         ArrayList<String> favorite = new ArrayList<>();
 
         favorite.add("favorite");
 
-        favorite.add(actionType);
-
-        for(String s : itemId) {
+        for(String s : p) {
 
             favorite.add(s);
 
@@ -956,7 +959,8 @@ public class Tracker extends Activity {
 
     public static int eventCnt = 0;
 
-    public static void _trackEvent(String category, String action, String opt_label, int opt_value) {
+    // (String category, String action, String opt_label, int opt_value)
+    public static void _trackEvent(String... p) {
 
         if(cookieEnabled) {
 
@@ -981,18 +985,18 @@ public class Tracker extends Activity {
 
                 List<String> urllist = new ArrayList<>(Arrays.asList(url));
 
-                urllist.add("&e1=" + encodeURIComponent(category));
-                urllist.add("&e2=" + encodeURIComponent(action));
+                urllist.add("&e1=" + encodeURIComponent(p[0]));
+                urllist.add("&e2=" + encodeURIComponent(p[1]));
 
-                if(opt_label != "") {
+                if(p[2] != "") {
 
-                    urllist.add("&e1=" + encodeURIComponent(opt_label));
+                    urllist.add("&e1=" + encodeURIComponent(p[2]));
 
                 }
 
-                if(opt_value != 0) {
+                if(p[3] != "") {
 
-                    urllist.add("&e1=" + encodeURIComponent(Integer.toString(opt_value)));
+                    urllist.add("&e1=" + encodeURIComponent(p[3]));
 
                 }
 

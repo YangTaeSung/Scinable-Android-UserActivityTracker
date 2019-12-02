@@ -19,15 +19,14 @@ public class MainActivity extends AppCompatActivity {
         //Scinable._scq.put("_setAccount",Scinable.valueArray);
 
 
-        // 그냥 함수로 바로 쏘기 X
+        // 그냥 함수로 바로 보내기 X (_scq에 저장한 후에 일괄적인 작업을 위해)
         //Scinable.setAccount(Scinable.valueArray);
 
 
+        // String... 형식으로 보내기
         SCQ _scq = SCQ.getInstance();
         _scq.push("_setAccount","tsy0668");
         _scq.push("_setLanguage","English");
-
-
 
     }
 
