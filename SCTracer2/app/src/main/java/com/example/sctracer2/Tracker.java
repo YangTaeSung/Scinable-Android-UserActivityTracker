@@ -1,128 +1,38 @@
-package com.example.sctracker;
+package com.example.sctracer2;
 
 import android.app.Activity;
 import android.graphics.Point;
 import android.view.Display;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.sctracker.Scinable.cookie;
-import static com.example.sctracker.Scinable.cookieEnabled;
-import static com.example.sctracker.Scinable.visitTime;
-import static com.example.sctracker.Util.encodeURIComponent;
 
 public class Tracker extends Activity {
 
-    // trackViewPage가 호출되었을 때 일괄적으로 서버에 전송하기 위한 플래그
-    public static boolean needsDomReady = false;
+    Scinable scinable = Scinable.getInstance();
+    ScinableConfig scinableConfig = ScinableConfig.getInstance();
+    Trans trans = Trans.getInstance();
+    Access access = Access.getInstance();
+    AccessConfig accessConfig = AccessConfig.getInstance();
+    Param param = Param.getInstance();
+    Util util = new Util();
 
 
-    // 변수 하나만 받는건 이거로 받으면 안돼
-    // value[0]은 function name, value[1]부터 value값
-    protected void tracking(String[] value) {
+    public void _setAccount(String... p) {
 
-        if(value[0].equals("_setAccount")) {
-
-            _setAccount(value);
-
-        } else if(value[0].equals("_setDebug")) {
-
-            _setDebug(value);
-
-        } else if(value[0].equals("_setLanguage")) {
-
-            _setLanguage(value);
-
-        } else if(value[0].equals("_setSessionCookieTimeout")) {
-
-            _setSessionCookieTimeout(value);
-
-        } else if(value[0].equals("_setVisitorCookieTimeout")) {
-
-            _setVisitorCookieTimeout(value);
-
-        } else if(value[0].equals("_setCampaignParameter")) {
-
-            _setCampaignParameter(value);
-
-        } else if(value[0].equals("_setOffline")) {
-
-            _setOffline(value);
-
-        } else if(value[0].equals("_setCampaign")) {
-
-            _setCampaign(value);
-
-        } else if(value[0].equals("_setCustomVar")) {
-
-            _setCustomVar(value);
-
-        } else if(value[0].equals("_setConversion")) {
-
-            _setConversion(value);
-
-        } else if(value[0].equals("_addTrans")) {
-
-            _addTrans(value);
-
-        } else if(value[0].equals("_addItem")) {
-
-            _addItem(value);
-
-        } else if(value[0].equals("_addMember")) {
-
-            _addMember(value);
-
-        } else if(value[0].equals("_updateMember")) {
-
-            _updateMember(value);
-
-        } else if(value[0].equals("_cancelMember")) {
-
-            _cancelMember(value);
-
-        } else if(value[0].equals("_addClaim")) {
-
-            _addClaim(value);
-
-        } else if(value[0].equals("_trackPageview")) {
-
-            _trackPageview();
-
-        } else if(value[0].equals("_trackCart")) {
-
-            _trackCart(value);
-
-        } else if(value[0].equals("_trackFavorite")) {
-
-            _trackFavorite(value);
-
-        } else if(value[0].equals("_trackEvent")) {
-
-            _trackEvent(value);
-
-        } else return;
-
-    }
-
-
-    public static void _setAccount(String... p) {
-
-        Scinable.accountId = p[1];
+        scinable.setaccountId(p[1]);
 
     }
 
 
     public void _setDebug(String... p) {
 
-        Scinable.debug = Boolean.valueOf(p[1]);
+        scinable.setdebug(Boolean.valueOf(p[1]));
 
     }
 
@@ -147,45 +57,45 @@ public class Tracker extends Activity {
 
     public void _setLanguage(String... p) {
 
-        Scinable.language = p[1];
+        scinable.setlanguage(p[1]);
 
     }
 
 
     public void _setSessionCookieTimeout(String... timeout) {
 
-        Config.cvExpire = Long.parseLong(timeout[1]);
-        Config.czExpire = Long.parseLong(timeout[1]);
+        scinableConfig.setcvExpire(Long.parseLong(timeout[1]));
+        scinableConfig.setczExpire(Long.parseLong(timeout[1]));
 
     }
 
 
     public void _setVisitorCookieTimeout(String... timeout) {
 
-        Config.cuExpire = Long.parseLong(timeout[1]);
-        Config.ccExpire = Long.parseLong(timeout[1]);
+        scinableConfig.setcuExpire(Long.parseLong(timeout[1]));
+        scinableConfig.setccExpire(Long.parseLong(timeout[1]));
 
     }
 
 
     // access
-    protected void _trackPageview() {
+    public void _trackPageview() {
 
-        if(!Scinable.cookieEnabled) {
+        if(!scinable.getcookieEnabled()) {
 
             return;
 
         }
 
-        String vid = Util.getVid();
-        String uid = Util.getUid();
+        String vid = util.getVid();
+        String uid = util.getUid();
 
         String ck = "";
         String ak = "0";
         String gk = "0";
         String cl = "";
 
-        String cc = Util.getCookie("___cc");
+        String cc = util.getCookie("___cc");
         String[] carr = cc.split(".");
         if(carr.length == 4) {
             ck = carr[0];
@@ -196,21 +106,21 @@ public class Tracker extends Activity {
 
         String json = "";
 
-        if(Trans.order.size() > 0) {
+        if(trans.getorder().size() > 0) {
 
-            json = Scinable.getOrderData();
+            json = scinable.getOrderData();
 
-        } else if(Trans.member.size() > 0) {
+        } else if(trans.getmember().size() > 0) {
 
-            json = Scinable.getMemberData();
+            json = scinable.getMemberData();
 
-        } else if(Trans.claim.size() > 0) {
+        } else if(trans.getclaim().size() > 0) {
 
-            json = Scinable.getClaimData();
+            json = scinable.getClaimData();
 
         }
 
-        int sdt = (int)((new Date().getTime() - Scinable.visitTime) / 1000);
+        int sdt = (int)((new Date().getTime() - scinable.getvisitTime()) / 1000);
 
         Scinable scinable = new Scinable();
 
@@ -224,43 +134,43 @@ public class Tracker extends Activity {
         height = size.y;
 
         String[] urlarr = { "protocol",
-                            Config.host,
-                            AccessConfig.uri,
+                            scinableConfig.gethost(),
+                            accessConfig.geturi(),
                             "?vid=", vid,
                             "&uid=", uid,
                             "&ua=", "", /* userAgent속성은 브라우저가 서버로 보낸 사용자 에이전트 헤더를 반환합니다.*/
                             "&p=", scinable.getPageUrl(), /* pageUrl 안씀 */
-                            "&dt=", encodeURIComponent(scinable.getPageTitle()),
-                            "&cgk=", Integer.toString(Access.cgk),
-                            "&cgv=", Integer.toString(Access.cgv),
-                            "&cgc=", Util.encodeURIComponent(Access.cgc),
-                            "&pid=", Util.encodeURIComponent(Access.id),
-                            "&pgid=", Util.encodeURIComponent(Access.groupid),
-                            "&pat=", Util.encodeURIComponent(Access.type),
+                            "&dt=", util.encodeURIComponent(scinable.getPageTitle()),
+                            "&cgk=", Integer.toString(access.getcgk()),
+                            "&cgv=", Integer.toString(access.getcgv()),
+                            "&cgc=", util.encodeURIComponent(access.getcgc()),
+                            "&pid=", util.encodeURIComponent(access.getid()),
+                            "&pgid=", util.encodeURIComponent(access.getgroupid()),
+                            "&pat=", util.encodeURIComponent(access.gettype()),
                             "&sr=", width + "x" + height,
-                            "&la=", Scinable.getLang(),
-                            "&fr=", Scinable.getFreq(),
-                            "&pv=", Scinable.getPreVisitDate(),
+                            "&la=", scinable.getLang(),
+                            "&fr=", scinable.getFreq(),
+                            "&pv=", scinable.getPreVisitDate(),
                             "&ref=", "",// 필요 없음/* encodeURIComponent(Scinable.getReferrer()), */
-                            "&cid=", Scinable.campaign,
-                            "&ck=", encodeURIComponent(ck),
+                            "&cid=", scinable.getcampaign(),
+                            "&ck=", util.encodeURIComponent(ck),
                             "&ak=", ak,
                             "&gk=", gk,
-                            "&cl=", encodeURIComponent(cl),
-                            "&nv=", Integer.toString(Scinable.newVisit),
-                            "&at=", Scinable.offline,
-                            "&cc=", encodeURIComponent(cc),
-                            "&aid=", Scinable.accountId,
-                            "&jd=", encodeURIComponent(json),
-                            "&eid=", Scinable.channel,
-                            "&spv=", Integer.toString(Scinable.pageView),
+                            "&cl=", util.encodeURIComponent(cl),
+                            "&nv=", Integer.toString(scinable.getnewVisit()),
+                            "&at=", scinable.getoffline(),
+                            "&cc=", util.encodeURIComponent(cc),
+                            "&aid=", scinable.getaccountId(),
+                            "&jd=", util.encodeURIComponent(json),
+                            "&eid=", scinable.getchannel(),
+                            "&spv=", Integer.toString(scinable.getpageView()),
                             "&sdt=", Integer.toString(sdt),
-                            "&vp=",".", Util.getCookie("___cvp"),".",
-                            "&up=",".", Util.getCookie("___cup"),".",
-                            "&vc=",".", Util.getCookie("___cvc"),"."
+                            "&vp=",".", util.getCookie("___cvp"),".",
+                            "&up=",".", util.getCookie("___cup"),".",
+                            "&vc=",".", util.getCookie("___cvc"),"."
         };
 
-        Iterator<Map.Entry<String,String>> cf = Scinable.customField.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> cf = scinable.getcustomField().entrySet().iterator();
         while(cf.hasNext()) {
 
             Map.Entry<String,String> entry = (Map.Entry<String,String>)cf.next();
@@ -273,7 +183,7 @@ public class Tracker extends Activity {
                 list.add("$cp");
                 list.add(entry.getKey());
                 list.add("=");
-                list.add(Util.encodeURIComponent(cp));
+                list.add(util.encodeURIComponent(cp));
                 urlarr = list.toArray(new String[list.size()]);
 
             }
@@ -283,18 +193,14 @@ public class Tracker extends Activity {
         // join함수 : 배열의 항목들을 String으로 이어붙임.
         String url = join(urlarr,"");
 
-        if(needsDomReady == true) {
-
-            SCQ sendData = SCQ.getInstance();
-            sendData.run(url);
-
-        }
+        // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
+        scinable.run(url);
 
     }
 
 
     // join함수가 직접 구현
-    public static String join(String[] arr, String div) {
+    public String join(String[] arr, String div) {
 
         String result = "";
 
@@ -317,24 +223,24 @@ public class Tracker extends Activity {
     }
 
 
-    public static void _setCampaignParameter(String... p) {
+    public void _setCampaignParameter(String... p) {
 
-        Param.campaign = p[1];
+        param.setcampaign(p[1]);
 
     }
 
 
     // 매개변수를 사용하지 않지만 가변인자는 매개변수없이 호출해도 상관없음.
-    public static void _setOffline(String... p) {
+    public void _setOffline(String... p) {
 
-        Scinable.offline = "off";
+        scinable.setoffline("off");
 
     }
 
 
-    public static void _setCampaign(String... p) {
+    public void _setCampaign(String... p) {
 
-        Scinable.campaign = p[1];
+        scinable.setcampaign(p[1]);
 
     }
 
@@ -356,21 +262,21 @@ public class Tracker extends Activity {
     */
 
 
-    public static void _setPage(String url, String title, String id, String groupId, String type) {
+    public void _setPage(String url, String title, String id, String groupId, String type) {
 
-        Access.url = url;
-        Access.title = title;
-        Access.id = id;
-        Access.groupid = groupId;
-        Access.type = type;
+        access.seturl(url);
+        access.settitle(title);
+        access.setid(id);
+        access.setgroupid(groupId);
+        access.settype(type);
 
     }
 
 
-    public static void _setPage(String id, String groupId) {
+    public void _setPage(String id, String groupId) {
 
-        Access.id = id;
-        Access.groupid = groupId;
+        access.setid(id);
+        access.setgroupid(groupId);
 
     }
 
@@ -379,9 +285,9 @@ public class Tracker extends Activity {
     // 2번째, 4번째 매개변수는 선택적. 선택하지 않을 때 사용자는 공백("")을 입력한다고 가정
     // 쿠키로 등록하기 전 인자로 받은 배열 요소는 [ 회원ID.해당생년월일그룹.성별.등급 ] 의 형식
     // (String customerId, String birthDate, String gender, String customerLevel)
-    public static void _setCustomVar(String... p) {
+    public void _setCustomVar(String... p) {
 
-        if(cookieEnabled = true) {
+        if(scinable.getcookieEnabled()) {
 
             String con = "";
 
@@ -389,7 +295,7 @@ public class Tracker extends Activity {
 
             if(p[2] != "") {
 
-                con += "." + Util.getAgeGroupKey(p[2]); // 2nd
+                con += "." + util.getAgeGroupKey(p[2]); // 2nd
 
             }
 
@@ -401,7 +307,7 @@ public class Tracker extends Activity {
 
             }
 
-            Util.setCookie("___cc", con, Config.ccExpire);
+            util.setCookie("___cc", con, scinableConfig.getccExpire());
 
         }
 
@@ -414,13 +320,13 @@ public class Tracker extends Activity {
     // js에서는 opt_conversionValue가 Option으로 나타나지만
     // 유인물에서는 필수항목으로 정의됨. 필수항목으로 작성
     // (int conversionId, int opt_conversionValue, String reserveList1, String reserveList2, String reserveList3, String reserveList4, String reserveList5)
-    public static void _setConversion(String... p) {
+    public void _setConversion(String... p) {
 
-        Access.cgk = Integer.parseInt(p[1]); // 1st
+        access.setcgk(Integer.parseInt(p[1])); // 1st
 
         if(Integer.parseInt(p[2]) != 0) {
 
-            Access.cgv = Integer.parseInt(p[2]); // 2nd
+            access.setcgv(Integer.parseInt(p[2])); // 2nd
 
         }
 
@@ -445,8 +351,8 @@ public class Tracker extends Activity {
 
         }
 
-        Access.cgc = cgcList;
-        Util.setR("___cvc", p[1],Config.cvExpire);
+        access.setcgc(cgcList);
+        util.setR("___cvc", p[1],scinableConfig.getcvExpire());
 
     }
 
@@ -463,66 +369,66 @@ public class Tracker extends Activity {
     // 선택옵션이 선택되지 않았을 경우 공백("")을 입력받는 것으로 가정한다.
     // (String orderId, String shopId, String payType, int totalItemPrice, int totalItemCost, int totalAmount, String customerId, String address,
     //   String opt_customSet1, String opt_customSet2, String opt_customSet3, String opt_customSet4, String opt_customSet5)
-    public static void _addTrans(String... p) {
+    public void _addTrans(String... p) {
 
-        Trans.type = "C";
-        Trans.order.add(p[1]);
+        trans.settype("C");
+        trans.addorder(p[1]);
 
         if(p[2] != "") {
 
-            Trans.order.add(p[2]);
+            trans.addorder(p[2]);
 
         }
 
         if(p[3] != "") {
 
-            Trans.order.add(p[3]);
+            trans.addorder(p[3]);
 
         }
 
-        Trans.order.add(p[4]);
-        Trans.order.add(p[5]);
-        Trans.order.add(p[6]);
+        trans.addorder(p[4]);
+        trans.addorder(p[5]);
+        trans.addorder(p[6]);
 
         if(p[7] != "") {
 
-            Trans.order.add(p[7]);
+            trans.addorder(p[7]);
 
         }
 
         if(p[8] != "") {
 
-            Trans.order.add(p[8]);
+            trans.addorder(p[8]);
 
         }
 
         if(p[9] != "") {
 
-            Trans.order.add(p[9]);
+            trans.addorder(p[9]);
 
         }
 
         if(p[10] != "") {
 
-            Trans.order.add(p[10]);
+            trans.addorder(p[10]);
 
         }
 
         if(p[11] != "") {
 
-            Trans.order.add(p[11]);
+            trans.addorder(p[11]);
 
         }
 
         if(p[12] != "") {
 
-            Trans.order.add(p[12]);
+            trans.addorder(p[12]);
 
         }
 
         if(p[13] != "") {
 
-            Trans.order.add(p[13]);
+            trans.addorder(p[13]);
 
         }
 
@@ -903,7 +809,7 @@ public class Tracker extends Activity {
 
     public static void sendItems(ArrayList<String> arg) {
 
-        if(cookieEnabled != false) {
+        if(Scinable.cookieEnabled != false) {
 
             String ck = Util.getCK();
 
@@ -917,7 +823,7 @@ public class Tracker extends Activity {
                         "&uid=", Util.getUid(),
                         //'&ua=', encodeURIComponent(navigator.userAgent),
                         //'&p=', encodeURIComponent(Scinable.getPageUrl()),
-                        "&ck=", encodeURIComponent(ck),
+                        "&ck=", Util.encodeURIComponent(ck),
                         "&nv=", Integer.toString(Scinable.newVisit),
                         "&aid=", Scinable.accountId
                 };
@@ -940,12 +846,12 @@ public class Tracker extends Activity {
                     // arr를 사용하지 않음. 그래서 for문의 i는 3부터 시작
                     // arr[0]은 cart/favorite, arr[1]은 action
                     // arr[2]부터 items 요소
-                    items.add(encodeURIComponent(arg.get(2)));
+                    items.add(Util.encodeURIComponent(arg.get(2)));
 
                     for(int i = 3; i < arg.size(); i++) {
 
                         items.add(";");
-                        items.add(encodeURIComponent(arg.get(i)));
+                        items.add(Util.encodeURIComponent(arg.get(i)));
 
                     }
 
@@ -974,7 +880,7 @@ public class Tracker extends Activity {
     // (String category, String action, String opt_label, int opt_value)
     public static void _trackEvent(String... p) {
 
-        if(cookieEnabled) {
+        if(Scinable.cookieEnabled) {
 
             if(++eventCnt < 10) {
 
@@ -997,18 +903,18 @@ public class Tracker extends Activity {
 
                 List<String> urllist = new ArrayList<>(Arrays.asList(url));
 
-                urllist.add("&e1=" + encodeURIComponent(p[0]));
-                urllist.add("&e2=" + encodeURIComponent(p[1]));
+                urllist.add("&e1=" + Util.encodeURIComponent(p[0]));
+                urllist.add("&e2=" + Util.encodeURIComponent(p[1]));
 
                 if(p[2] != "") {
 
-                    urllist.add("&e1=" + encodeURIComponent(p[2]));
+                    urllist.add("&e1=" + Util.encodeURIComponent(p[2]));
 
                 }
 
                 if(p[3] != "") {
 
-                    urllist.add("&e1=" + encodeURIComponent(p[3]));
+                    urllist.add("&e1=" + Util.encodeURIComponent(p[3]));
 
                 }
 
