@@ -133,7 +133,7 @@ public class Tracker extends Activity {
         width = size.x;
         height = size.y;
 
-        String[] urlarr = { "protocol",
+        String[] urlarr = { "http://",
                             scinableConfig.gethost(),
                             accessConfig.geturi(),
                             "?vid=", vid,
@@ -442,68 +442,68 @@ public class Tracker extends Activity {
     //   int cost, String opt_customSet1, String opt_customSet2,
     //   String opt_customSet3, String opt_customSet4, String opt_customSet5,
     //   String opt_itemGroupId)
-    public static void _addItem(String... p) {
+    public void _addItem(String... p) {
 
-        Trans.items.add(p[1]);
-        Trans.items.add(p[2]);
+        trans.additems(p[1]);
+        trans.additems(p[2]);
 
         if(p[3] != "") {
 
-            Trans.items.add(p[3]);
+            trans.additems(p[3]);
 
         }
 
         if(p[4] != "") {
 
-            Trans.items.add(p[4]);
+            trans.additems(p[4]);
 
         }
 
         if(p[5] != "") {
 
-            Trans.items.add(p[5]);
+            trans.additems(p[5]);
 
         }
 
-        Trans.items.add(p[6]);
-        Trans.items.add(p[7]);
-        Trans.items.add(p[8]);
-        Trans.items.add(p[9]);
-        Trans.items.add(p[10]);
+        trans.additems(p[6]);
+        trans.additems(p[7]);
+        trans.additems(p[8]);
+        trans.additems(p[9]);
+        trans.additems(p[10]);
 
         if(p[11] != "") {
 
-            Trans.items.add(p[11]);
+            trans.additems(p[11]);
 
         }
 
         if(p[12] != "") {
 
-            Trans.items.add(p[12]);
+            trans.additems(p[12]);
 
         }
 
         if(p[13] != "") {
 
-            Trans.items.add(p[13]);
+            trans.additems(p[13]);
 
         }
 
         if(p[14] != "") {
 
-            Trans.items.add(p[14]);
+            trans.additems(p[14]);
 
         }
 
         if(p[15] != "") {
 
-            Trans.items.add(p[15]);
+            trans.additems(p[15]);
 
         }
 
         if(p[16] != "") {
 
-            Trans.items.add(p[16]);
+            trans.additems(p[16]);
 
         }
 
@@ -516,85 +516,85 @@ public class Tracker extends Activity {
     //  String customerLevel, String email, String lastName, String firstName,
     //  String mailYn, String opt_customSet1, String opt_customSet2,
     //  String opt_customSet3, String opt_customSet4, String opt_customSet5)
-    public static void _addMember(String... p) {
+    public void _addMember(String... p) {
 
-        Trans.type = "C";
+        trans.settype("C");
 
-        Trans.member.add(p[1]);
+        trans.addmember(p[1]);
 
         if(p[2] != "") {
 
-            Trans.member.add(p[2]);
+            trans.addmember(p[2]);
 
         }
 
         if(p[3] != "") {
 
-            Trans.member.add(p[3]);
+            trans.addmember(p[3]);
 
         }
 
         if(p[4] != "") {
 
-            Trans.member.add(p[4]);
+            trans.addmember(p[4]);
 
         }
 
         if(p[5] != "") {
 
-            Trans.member.add(p[5]);
+            trans.addmember(p[5]);
 
         }
 
         if(p[6] != "") {
 
-            Trans.member.add(p[6]);
+            trans.addmember(p[6]);
 
         }
 
         if(p[7] != "") {
 
-            Trans.member.add(p[7]);
+            trans.addmember(p[7]);
 
         }
 
         if(p[8] != "") {
 
-            Trans.member.add(p[8]);
+            trans.addmember(p[8]);
 
         }
 
-        Trans.member.add(p[9]);
+        trans.addmember(p[9]);
 
-        Trans.member.add("1");
+        trans.addmember("1");
 
         if(p[10] != "") {
 
-            Trans.member.add(p[10]);
+            trans.addmember(p[10]);
 
         }
 
         if(p[11] != "") {
 
-            Trans.member.add(p[11]);
+            trans.addmember(p[11]);
 
         }
 
         if(p[12] != "") {
 
-            Trans.member.add(p[12]);
+            trans.addmember(p[12]);
 
         }
 
         if(p[13] != "") {
 
-            Trans.member.add(p[13]);
+            trans.addmember(p[13]);
 
         }
 
         if(p[14] != "") {
 
-            Trans.member.add(p[14]);
+            trans.addmember(p[14]);
 
         }
 
@@ -605,95 +605,96 @@ public class Tracker extends Activity {
     //  String customerLevel, String email, String lastName, String firstName,
     //  String mailYn, String opt_customSet1, String opt_customSet2,
     //  String opt_customSet3, String opt_customSet4, String opt_customSet5)
-    public static void _updateMember(String... p) {
+    // Update 메소드지만 js코드와 type만 다르고, addmember()와 똑같이 push하는 동작을 함.
+    public void _updateMember(String... p) {
 
-        Trans.type = "U";
+        trans.settype("U");
 
-        Trans.member.add(p[1]);
+        trans.addmember(p[1]);
 
         if(p[2] != "") {
 
-            Trans.member.add(p[2]);
+            trans.addmember(p[2]);
 
         }
 
         if(p[3] != "") {
 
-            Trans.member.add(p[3]);
+            trans.addmember(p[3]);
 
         }
 
         if(p[4] != "") {
 
-            Trans.member.add(p[4]);
+            trans.addmember(p[4]);
 
         }
 
         if(p[5] != "") {
 
-            Trans.member.add(p[5]);
+            trans.addmember(p[5]);
 
         }
 
         if(p[6] != "") {
 
-            Trans.member.add(p[6]);
+            trans.addmember(p[6]);
 
         }
 
         if(p[7] != "") {
 
-            Trans.member.add(p[7]);
+            trans.addmember(p[7]);
 
         }
 
         if(p[8] != "") {
 
-            Trans.member.add(p[8]);
+            trans.addmember(p[8]);
 
         }
 
-        Trans.member.add(p[9]);
+        trans.addmember(p[9]);
 
-        Trans.member.add("1");
+        trans.addmember("1");
 
         if(p[10] != "") {
 
-            Trans.member.add(p[10]);
+            trans.addmember(p[10]);
 
         }
 
         if(p[11] != "") {
 
-            Trans.member.add(p[11]);
+            trans.addmember(p[11]);
 
         }
 
         if(p[12] != "") {
 
-            Trans.member.add(p[12]);
+            trans.addmember(p[12]);
 
         }
 
         if(p[13] != "") {
 
-            Trans.member.add(p[13]);
+            trans.addmember(p[13]);
 
         }
 
         if(p[14] != "") {
 
-            Trans.member.add(p[14]);
+            trans.addmember(p[14]);
 
         }
 
     }
 
 
-    public static void _cancelMember(String... p) {
+    public void _cancelMember(String... p) {
 
-        Trans.type = "W";
-        Trans.member.add(p[1]);
+        trans.settype("W");
+        trans.addmember(p[1]);
 
     }
 
@@ -703,67 +704,67 @@ public class Tracker extends Activity {
     //  int unitPrice, int unitCost,int price, int cost, String opt_customset1,
     //  String opt_customset2, String opt_customset3, String opt_customset4,
     //  String opt_customset5)
-    public static void _addClaim(String... p) {
+    public void _addClaim(String... p) {
 
-        Trans.type = "C";
+        trans.settype("C");
 
-        Trans.claim.add(p[1]);
-        Trans.claim.add(p[2]);
+        trans.addclaim(p[1]);
+        trans.addclaim(p[2]);
 
         if(p[3] != "") {
 
-            Trans.claim.add(p[3]);
+            trans.addclaim(p[3]);
 
         }
 
-        Trans.claim.add(p[4]);
-        Trans.claim.add(p[5]);
+        trans.addclaim(p[4]);
+        trans.addclaim(p[5]);
 
         if(p[6] != "") {
 
-            Trans.claim.add(p[6]);
+            trans.addclaim(p[6]);
 
         }
 
         if(p[7] != "") {
 
-            Trans.claim.add(p[7]);
+            trans.addclaim(p[7]);
 
         }
 
-        Trans.claim.add(p[8]);
-        Trans.claim.add(p[9]);
-        Trans.claim.add(p[10]);
-        Trans.claim.add(p[11]);
-        Trans.claim.add(p[12]);
+        trans.addclaim(p[8]);
+        trans.addclaim(p[9]);
+        trans.addclaim(p[10]);
+        trans.addclaim(p[11]);
+        trans.addclaim(p[12]);
 
         if(p[13] != "") {
 
-            Trans.claim.add(p[13]);
+            trans.addclaim(p[13]);
 
         }
 
         if(p[14] != "") {
 
-            Trans.claim.add(p[14]);
+            trans.addclaim(p[14]);
 
         }
 
         if(p[15] != "") {
 
-            Trans.claim.add(p[15]);
+            trans.addclaim(p[15]);
 
         }
 
         if(p[16] != "") {
 
-            Trans.claim.add(p[16]);
+            trans.addclaim(p[16]);
 
         }
 
         if(p[17] != "") {
 
-            Trans.claim.add(p[17]);
+            trans.addclaim(p[17]);
 
         }
 
@@ -772,7 +773,7 @@ public class Tracker extends Activity {
 
     // 만약 가변인자 외에도 다른 매개변수가 더 있다면 가변인자는 마지막에 선언해야 한다.
     // 유인물에 하나 더 있는데 넘김.
-    public static void _trackCart(String... p) {
+    public void _trackCart(String... p) {
 
         ArrayList<String> cart = new ArrayList<>();
 
@@ -790,7 +791,7 @@ public class Tracker extends Activity {
 
 
     // 유인물에 하나 더 있는데 넘김.
-    public static void _trackFavorite(String... p) {
+    public void _trackFavorite(String... p) {
 
         ArrayList<String> favorite = new ArrayList<>();
 
@@ -807,11 +808,11 @@ public class Tracker extends Activity {
     }
 
 
-    public static void sendItems(ArrayList<String> arg) {
+    public void sendItems(ArrayList<String> arg) {
 
-        if(Scinable.cookieEnabled != false) {
+        if(scinable.getcookieEnabled() != false) {
 
-            String ck = Util.getCK();
+            String ck = util.getCK();
 
             if(ck != null) {
 
@@ -819,13 +820,13 @@ public class Tracker extends Activity {
                         //document.location.protocol=="https:"?"https://":"http://",
                         //Scinable.Config.host,
                         //Scinable.Access.Config.uri,
-                        "?vid=", Util.getVid(),
-                        "&uid=", Util.getUid(),
+                        "?vid=", util.getVid(),
+                        "&uid=", util.getUid(),
                         //'&ua=', encodeURIComponent(navigator.userAgent),
                         //'&p=', encodeURIComponent(Scinable.getPageUrl()),
-                        "&ck=", Util.encodeURIComponent(ck),
-                        "&nv=", Integer.toString(Scinable.newVisit),
-                        "&aid=", Scinable.accountId
+                        "&ck=", util.encodeURIComponent(ck),
+                        "&nv=", Integer.toString(scinable.getnewVisit()),
+                        "&aid=", scinable.getaccountId()
                 };
 
                 List<String> urllist = new ArrayList<>(Arrays.asList(url));
@@ -846,12 +847,12 @@ public class Tracker extends Activity {
                     // arr를 사용하지 않음. 그래서 for문의 i는 3부터 시작
                     // arr[0]은 cart/favorite, arr[1]은 action
                     // arr[2]부터 items 요소
-                    items.add(Util.encodeURIComponent(arg.get(2)));
+                    items.add(util.encodeURIComponent(arg.get(2)));
 
                     for(int i = 3; i < arg.size(); i++) {
 
                         items.add(";");
-                        items.add(Util.encodeURIComponent(arg.get(i)));
+                        items.add(util.encodeURIComponent(arg.get(i)));
 
                     }
 
@@ -861,12 +862,8 @@ public class Tracker extends Activity {
 
                 String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
 
-                if(needsDomReady == true) {
-
-                    SCQ sendData = SCQ.getInstance();
-                    sendData.run(urlFinal);
-
-                }
+                // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
+                scinable.run(urlFinal);
 
             }
 
@@ -878,9 +875,9 @@ public class Tracker extends Activity {
     public static int eventCnt = 0;
 
     // (String category, String action, String opt_label, int opt_value)
-    public static void _trackEvent(String... p) {
+    public void _trackEvent(String... p) {
 
-        if(Scinable.cookieEnabled) {
+        if(scinable.getcookieEnabled()) {
 
             if(++eventCnt < 10) {
 
@@ -889,43 +886,39 @@ public class Tracker extends Activity {
                         //document.location.protocol=="https:"?"https://":"http://",
                         //Scinable.Config.host,
                         //Scinable.Access.Config.uri,
-                        "?vid=", Util.getVid(),
-                        "&uid=", Util.getUid(),
+                        "?vid=", util.getVid(),
+                        "&uid=", util.getUid(),
                         //"&ua=", encodeURIComponent(navigator.userAgent),
                         //'&p=', encodeURIComponent(Scinable.getPageUrl()),
                         //'&dt=', encodeURIComponent(Scinable.getPageTitle()),
-                        "&nv=", Integer.toString(Scinable.newVisit),
+                        "&nv=", Integer.toString(scinable.getnewVisit()),
                         //'&hn=', encodeURIComponent(document.domain),
-                        "&aid=", Scinable.accountId,
+                        "&aid=", scinable.getaccountId(),
                         "&at=", "event"
 
                 };
 
                 List<String> urllist = new ArrayList<>(Arrays.asList(url));
 
-                urllist.add("&e1=" + Util.encodeURIComponent(p[0]));
-                urllist.add("&e2=" + Util.encodeURIComponent(p[1]));
+                urllist.add("&e1=" + util.encodeURIComponent(p[0]));
+                urllist.add("&e2=" + util.encodeURIComponent(p[1]));
 
                 if(p[2] != "") {
 
-                    urllist.add("&e1=" + Util.encodeURIComponent(p[2]));
+                    urllist.add("&e1=" + util.encodeURIComponent(p[2]));
 
                 }
 
                 if(p[3] != "") {
 
-                    urllist.add("&e1=" + Util.encodeURIComponent(p[3]));
+                    urllist.add("&e1=" + util.encodeURIComponent(p[3]));
 
                 }
 
                 String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
 
-                if(needsDomReady == true) {
-
-                    SCQ sendData = SCQ.getInstance();
-                    sendData.run(urlFinal);
-
-                }
+                // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
+                scinable.run(urlFinal);
 
             }
 

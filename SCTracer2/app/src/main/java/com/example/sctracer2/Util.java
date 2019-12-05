@@ -13,6 +13,7 @@ public class Util {
 
     Scinable scinable = Scinable.getInstance();
     ScinableConfig scinableConfig = ScinableConfig.getInstance();
+    Param param = Param.getInstance();
 
     public void go(String NextActivity) {
 
@@ -235,35 +236,26 @@ public class Util {
 
     }
 
-    /*
 
     public String getParameter(String name) {
 
-        if(Util.paramValues == null) {
+        if(paramValues == null) {
 
-            Util.paramValues = Util.getQueryString();
+            paramValues = getQueryString();
 
         }
 
+        return "";
+
     }
 
-    */
 
-
-    // 쿠키값을 리턴해주는 메소드. Document.cookie는 모든 쿠키가 저장되어 있는데
+    // 쿠키값을 리턴해주는 메소드. Document.cookie는 Javascript상의 쿠키 저장소
     // IndexOf()로 시작 위치를 찾고 len으로 길이 찾고 end지점 찾아서 리턴해줘
-    // 리턴할 때 '키=값'이런 형식으로 리턴
+    // 리턴할 때 키의 값만 리턴
     public String getCookie(String name) {
 
         if(scinable.getcookieEnabled()) {
-
-            // cookieEnabled가 true인 상태면 SharedPreferences에 쿠키가 있는 상태니까
-            // 찾아서 뽑아주기만 하면 돼, js코드는 과정이 조금 긴데 간단하게 할 수 있을 듯.
-
-            // 위에 주석이 처음 한 생각, cookie라는 변수를 Scinable에 만들었고,
-            // 그걸 쿠키로 써. SharedPreferences는 데이터를 서버에 전송할 때 쓰기.
-            // 사용자가 이미 SharedPreferences쓰면서 쿠키의 역할(자동로그인 같은거)을 하고 있는
-            // 상황은 추후에 생각하기.
 
             int start = scinable.getcookie().indexOf(name + "=");
             int len = start + name.length() + 1; // indexOf()하면 1 적게 출력
@@ -281,7 +273,7 @@ public class Util {
             if(end == -1) {
 
                 // 쿠키의 마지막은 세미콜론 없이 끝나기 때문에 세미콜론이 보이지 않으면
-                // 쿠키전체의 길이가 찾고있는 값의 마지막 부분
+                // 쿠키전체가 name=xx 형태로 형성된 것
                 end = scinable.getcookie().length();
 
             }
@@ -318,7 +310,7 @@ public class Util {
 
             str += " path=/";
 
-            앱 내에서 도메인과 경로는 쓰이지 않기 때문에 쿠키의 형태는 " 이름=값;만료시간=만료시간 "
+            앱 내에서 도메인과 경로는 쓰이지 않기 때문에 쿠키의 형태는 " 이름=값; 만료시간=만료시간 "
 
             */
 
@@ -336,13 +328,13 @@ public class Util {
                 Calendar calendar = Calendar.getInstance();
                 expires += calendar.getTimeInMillis(); // 현재시간 밀리초값을 만료시간과 더하기
                 Date timegmt = new Date(expires); // 해당 밀리초값을 날짜로 변환
-                str += "; expires=" + format1.format(timegmt);
+                str += " expires=" + format1.format(timegmt);
 
             }
 
             scinable.setcookie(str);
 
-            // " 이름=값;만료시간=만료시간 "의 형태로 쿠키 생성
+            // " 이름=값; 만료시간=만료시간 "의 형태로 쿠키 생성
 
         }
 
@@ -352,7 +344,7 @@ public class Util {
     // 위 함수에서 세 번째 파라미터가 존재하지 않을 때
     public void setCookie(String name, String value) {
 
-        String str = name + "=" + encodeURI(value) + ";";
+        String str = name + "=" + encodeURI(value);
 
         /*
         if (Scinable.domainName != null) {
@@ -364,7 +356,7 @@ public class Util {
         str += " path=/";
          */
 
-        scinable.setcookie(str);
+        scinable.setcookie(str); // " 이름=값 " 형태의 쿠키
 
     }
 
@@ -398,9 +390,6 @@ public class Util {
                 // getParameter가 필요하고 getParameter는 getQueryString이 필요한데
                 // getQueryString이 페이지 URL의 쿼리를 반환하는거기 때문에
                 // 안드로이드에서 구현 불가.
-                // 간단하게 Scinable.vid가 있으면 그대로 쓰고 없으면 createUUID로 만듦.
-                // 만들면서 pageView나 newVisit이나 활성화시켜줌
-                // ___cv쓰는거는 일단 넘김
 
                 String cv = getCookie("___cv");
                 String[] cvArr = {};
@@ -409,50 +398,129 @@ public class Util {
 
                 if(cv != null) {
 
+                    cvArr = cv.split(".");
 
+                    if(cvArr.length > 2) {
+
+                        cookieCampaign = cvArr[2];
+
+                    }
+
+                    if(cvArr.length > 5) {
+
+                        cookieChannel = cvArr[5];
+
+                    }
 
                 }
 
-            /*
+                String sciCampaign = null;
 
-            ////////////////
-            // new visit
-            ////////////////
-            String cv = Util.getCookie("___cv"); // 쿠키를 가져오기
-            String[] cvArr = {};
-            String cookieCampaign = "";
-            String cookieChannel = "";
+                if(scinable.getcampaign() != null) {
 
-            // cv는 "___cv=value" 형태.
-            if (cv == null) {
+                    sciCampaign = scinable.getcampaign();
 
-                // update cu(visit date, frequency)
-                Scinable.frequency = Integer.toString(Integer.parseInt(Scinable.frequency) + 1);
-                Util.setCU(Scinable.uid, Util.today(), Scinable.frequency);
+                } else {
 
-                // create cv
-                Scinable.vid = Long.toString(Util.createUUID());
-                Scinable.visitTime = new Date().getTime();
-                Scinable.pageView = 1;
-                Scinable.newVisit = 1;
+                    sciCampaign = getParameter(param.geteciCampaign());
 
-                // sciCampaign이랑 sciChannel 나오는거 일단 문자열로 대충 처리.
-                cv = Scinable.vid + "." + Scinable.preVisitDate + "."
-                        + Scinable.visitTime
+                    if(sciCampaign == "" && param.getcampaign() != null) {
+
+                        sciCampaign = getParameter(param.geteciCampaign());
+
+                    }
+
+                }
+
+                if(sciCampaign != null) {
+
+                    if(sciCampaign != cookieCampaign) {
+
+                        cv = null;
+
+                    }
+
+                    scinable.setcampaign(sciCampaign);
+
+                } else {
+
+                    if(cookieCampaign != null) {
+
+                        scinable.setcampaign(cookieCampaign);
+
+                    }
+
+                }
+
+                String sciChannel = null;
+
+                if(scinable.getchannel() != null) {
+
+                    sciChannel = scinable.getchannel();
+
+                } else {
+
+                    if(cookieChannel != null) {
+
+                        scinable.setchannel(cookieChannel);
+
+                    }
+
+                }
+
+                ////////////////
+                // new visit
+                ////////////////
+                if (cv == null) {
+
+                    // update cu(visit date, frequency)
+                    scinable.setfrequency(Integer.toString(Integer.parseInt(scinable.getfrequency()) + 1));
+                    setCU(scinable.getuid(), today(), scinable.getfrequency());
+
+                    // create cv
+                    scinable.setvid(Long.toString(createUUID()));
+                    scinable.setvisitTime(new Date().getTime());
+                    scinable.setpageView(1);
+                    scinable.setnewVisit(1);
+
+                    // sciCampaign이랑 sciChannel 나오는거 일단 문자열로 대충 처리.
+                    cv = scinable.getvid() + "." + scinable.getpreVisitDate() + "." + sciCampaign + "." +
+                            scinable.getvisitTime() + ".1." + sciChannel;
+
+                } else {
+
+                    scinable.setvid(cvArr[0]);
+
+                    if(cvArr.length > 5) {
+
+                        scinable.setvisitTime(new Date().getTime());
+                        scinable.setpageView(1);
+
+                    } else {
+
+                        scinable.setvisitTime(Long.getLong(cvArr[3]));
+                        scinable.setpageView(Integer.parseInt(cvArr[4]) + 1);
+
+                    }
+
+                    cv = scinable.getvid() + "." + scinable.getPreVisitDate() + "." + cookieCampaign + "." +
+                            scinable.getvisitTime() + "." + scinable.getpageView() + "." + cookieChannel;
+
+                }
+
+                setCookie("___cv", cv, scinableConfig.getcvExpire());
+
+                return scinable.getvid();
 
             } else {
 
-                Scinable.vid = cvArr[0];
-
-            } */
+                return Long.toString(createUUID());
 
             }
+
         }
 
-        return "";
-
-    } // 일단 넘김.
-
+    }
 
 
 
