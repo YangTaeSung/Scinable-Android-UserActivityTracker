@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.view.Display;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -133,9 +134,9 @@ public class Tracker extends Activity {
         width = size.x;
         height = size.y;
 
-        String[] urlarr = { "http://",
+        String[] urlarr = { /* "http://",
                             scinableConfig.gethost(),
-                            accessConfig.geturi(),
+                            accessConfig.geturi(), */ // 파라미터만 전달.
                             "?vid=", vid,
                             "&uid=", uid,
                             "&ua=", "", /* userAgent속성은 브라우저가 서버로 보낸 사용자 에이전트 헤더를 반환합니다.*/
@@ -194,7 +195,15 @@ public class Tracker extends Activity {
         String url = join(urlarr,"");
 
         // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
-        scinable.run(url);
+        try {
+
+            scinable.sendToServer(url);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
 
     }
 
@@ -819,7 +828,7 @@ public class Tracker extends Activity {
                 String[] url = {
                         //document.location.protocol=="https:"?"https://":"http://",
                         //Scinable.Config.host,
-                        //Scinable.Access.Config.uri,
+                        //Scinable.Access.Config.uri, // 파라미터만 전달
                         "?vid=", util.getVid(),
                         "&uid=", util.getUid(),
                         //'&ua=', encodeURIComponent(navigator.userAgent),
@@ -863,7 +872,15 @@ public class Tracker extends Activity {
                 String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
 
                 // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
-                scinable.run(urlFinal);
+                try {
+
+                    scinable.sendToServer(urlFinal);
+
+                } catch (IOException e) {
+
+                    e.printStackTrace();
+
+                }
 
             }
 
@@ -885,7 +902,7 @@ public class Tracker extends Activity {
 
                         //document.location.protocol=="https:"?"https://":"http://",
                         //Scinable.Config.host,
-                        //Scinable.Access.Config.uri,
+                        //Scinable.Access.Config.uri, // 파라미터만 전달
                         "?vid=", util.getVid(),
                         "&uid=", util.getUid(),
                         //"&ua=", encodeURIComponent(navigator.userAgent),
@@ -918,7 +935,15 @@ public class Tracker extends Activity {
                 String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
 
                 // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
-                scinable.run(urlFinal);
+                try {
+
+                    scinable.sendToServer(urlFinal);
+
+                } catch (IOException e) {
+
+                    e.printStackTrace();
+
+                }
 
             }
 

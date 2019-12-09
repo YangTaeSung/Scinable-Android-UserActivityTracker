@@ -1,10 +1,20 @@
 package com.example.sctracer2;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,135 +54,28 @@ public class Scinable extends AppCompatActivity {
 
     }
 
+    public void sendToServer(String param) throws IOException {
 
-    OkHttpClient client = new OkHttpClient();
+        URL url = new URL("http://" + get_host() + "/insert.php");
 
-    // 예외처리 해줘야 됨.
-    public void run(String requesturl) {
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-        Request request = new Request.Builder()
-                .url(requesturl)
-                .build();
+        httpURLConnection.setReadTimeout(5000); //5초안에 응답이 오지 않으면 예외가 발생합니다.
+        httpURLConnection.setConnectTimeout(5000); //5초안에 연결이 안되면 예외가 발생합니다.
+        httpURLConnection.setRequestMethod("POST"); //요청 방식을 POST로 합니다.
+        httpURLConnection.connect();
 
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override public void onFailure(Call call, IOException e) {
-
-                e.printStackTrace();
-
-            }
-
-            @Override public void onResponse(Call call, Response response) {
-                /*try (ResponseBody responseBody = response.body()) { // API Level 19 이상 가능
-                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-                    Headers responseHeaders = response.headers();
-                    for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                        System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                    }
-                    System.out.println(responseBody.string());
-                }*/
-            }
-
-        });
-
-    }
-
-
-    // 사용자가 push명령을 수행할 시, 해당 함수는 즉시 동작한 후
-    // Scinable의 변수에 기입된다. 이후 _trackPageview같은 동작이 수행되어
-    // 서버로 Request할 시에 기입된 정보를 한꺼번에 서버로 송신한다.
-    // OKHttp의 enqueue를 이용하여 비동기 통신이 진행된다.
-    public void push(String... value) {
-
-        Tracker tracker = new Tracker();
-
-        if(value[0].equals("_setAccount")) {
-
-            tracker._setAccount(value);
-
-        } else if(value[0].equals("_setDebug")) {
-
-            tracker._setDebug(value);
-
-        } else if(value[0].equals("_setLanguage")) {
-
-            tracker._setLanguage(value);
-
-        } else if(value[0].equals("_setSessionCookieTimeout")) {
-
-            tracker._setSessionCookieTimeout(value);
-
-        } else if(value[0].equals("_setVisitorCookieTimeout")) {
-
-            tracker._setVisitorCookieTimeout(value);
-
-        } else if(value[0].equals("_setCampaignParameter")) {
-
-            tracker._setCampaignParameter(value);
-
-        } else if(value[0].equals("_setOffline")) {
-
-            tracker._setOffline(value);
-
-        } else if(value[0].equals("_setCampaign")) {
-
-            tracker._setCampaign(value);
-
-        } else if(value[0].equals("_setCustomVar")) {
-
-            tracker._setCustomVar(value);
-
-        } else if(value[0].equals("_setConversion")) {
-
-            tracker._setConversion(value);
-
-        } else if(value[0].equals("_addTrans")) {
-
-            tracker._addTrans(value);
-
-        } else if(value[0].equals("_addItem")) {
-
-            tracker._addItem(value);
-
-        } else if(value[0].equals("_addMember")) {
-
-            tracker._addMember(value);
-
-        } else if(value[0].equals("_updateMember")) {
-
-            tracker._updateMember(value);
-
-        } else if(value[0].equals("_cancelMember")) {
-
-            tracker._cancelMember(value);
-
-        } else if(value[0].equals("_addClaim")) {
-
-            tracker._addClaim(value);
-
-        } else if(value[0].equals("_trackPageview")) {
-
-            tracker._trackPageview();
-
-        } else if(value[0].equals("_trackCart")) {
-
-            tracker._trackCart(value);
-
-        } else if(value[0].equals("_trackFavorite")) {
-
-            tracker._trackFavorite(value);
-
-        } else if(value[0].equals("_trackEvent")) {
-
-            tracker._trackEvent(value);
-
-        } else return;
+        OutputStream outputStream = httpURLConnection.getOutputStream();
+        // 전송할 데이터가 저장된 변수를 이곳에 입력합니다. 인코딩을 고려해줘야 합니다.
+        outputStream.write(param.getBytes("UTF-8"));
+        outputStream.flush();
+        outputStream.close();
 
     }
 
 
     // "_host"는 ECIntelligence 서버
-    private String _host = "localhost:8080";
+    private String _host = "192.168.1.19";
     private String cookie = null; // *
     private boolean cookieEnabled = false;
     private String accountId = "";
@@ -426,25 +329,6 @@ public class Scinable extends AppCompatActivity {
     public void setcustomField(HashMap<String, String> customField) {
 
         this.customField = customField;
-
-    }
-
-
-
-    /* request와 관련된 함수 */
-    // 의미 파악 후 Activity와 연관짓기
-    String fullUrl;
-    String headLoc;
-    String scriptId;
-
-
-    // <getElementsByTagsName> : 문서의 요소 콜렉션을 NodeList로 리턴
-    // js파일에서는 첫번째 요소(item(0))을 가져옴
-    // 앱에서는 Url X
-    // 정보들을 받아와서 서버와 통신하는 작업
-    public void Request(String fullUrl) {
-
-        this.fullUrl = fullUrl;
 
     }
 
