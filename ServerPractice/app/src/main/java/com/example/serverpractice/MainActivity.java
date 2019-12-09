@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 String country = mEditTextCountry.getText().toString();
 
                 InsertData task = new InsertData();
+                // This parameters are located in doInBackground method
                 task.execute("http://" + IP_ADDRESS + "/insert.php", name,country);
 
 
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         ProgressDialog progressDialog;
 
         @Override
-        protected void onPreExecute() {
+        protected void onPreExecute() { // <String, Void, String> 2nd parameter : Void
             super.onPreExecute();
 
             progressDialog = ProgressDialog.show(MainActivity.this,
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String result) { // <String, Void, String> 3rd parameter : String
             super.onPostExecute(result);
 
             progressDialog.dismiss();
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(String... params) { // <String, Void, String> 1st parameter : String
 
             String name = (String)params[1];
             String country = (String)params[2];
