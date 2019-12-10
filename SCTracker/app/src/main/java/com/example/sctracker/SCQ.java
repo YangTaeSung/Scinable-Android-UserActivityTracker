@@ -2,6 +2,9 @@ package com.example.sctracker;
 
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,8 +30,6 @@ import okhttp3.ResponseBody;
 public class SCQ extends Tracker {
 
     private static volatile SCQ _scq = null;
-
-    protected String requestUrl = "";
 
     /*
     LinkedHashMap 사용 : 일반 HashMap은 순서가 보장되지 않음. LinkedHashMap은 FIFO 형식을 따름.
@@ -63,42 +64,28 @@ public class SCQ extends Tracker {
     }
 
 
-    OkHttpClient client = new OkHttpClient();
+    public static void sendToServer(String param) throws IOException {
 
-    // 예외처리 해줘야 됨.
-    public void run(String requesturl) {
+        URL url = new URL("http://" + Scinable._host + "/insert.php");
 
-        Request request = new Request.Builder()
-                .url(requesturl)
-                .build();
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-        client.newCall(request).enqueue(new Callback() {
+        httpURLConnection.setReadTimeout(5000); //5초안에 응답이 오지 않으면 예외가 발생합니다.
+        httpURLConnection.setConnectTimeout(5000); //5초안에 연결이 안되면 예외가 발생합니다.
+        httpURLConnection.setRequestMethod("POST"); //요청 방식을 POST로 합니다.
+        httpURLConnection.connect();
 
-            @Override public void onFailure(Call call, IOException e) {
-
-                e.printStackTrace();
-
-            }
-
-            @Override public void onResponse(Call call, Response response) {
-                /*try (ResponseBody responseBody = response.body()) { // API Level 19 이상 가능
-                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-                    Headers responseHeaders = response.headers();
-                    for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                        System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                    }
-                    System.out.println(responseBody.string());
-                }*/
-            }
-
-        });
+        OutputStream outputStream = httpURLConnection.getOutputStream();
+        // 전송할 데이터가 저장된 변수를 이곳에 입력합니다. 인코딩을 고려해줘야 합니다.
+        outputStream.write(param.getBytes("UTF-8"));
+        outputStream.flush();
+        outputStream.close();
 
     }
 
 
     // Queue사용
     // _scq.push호출 시 큐에 저장한 후에 _trackPageview가 호출될 시에 일괄적으로 tracking 시작.
-    // Okhttp에서 자동적으로 비동기통신 지원 functionNameAndValue 필요 없을 듯.
     public void push(String... p) {
 
         functionNameAndValue.offer(p);
@@ -113,12 +100,15 @@ public class SCQ extends Tracker {
 
             }
 
+            needsDomReady = false;
+
         }
 
     }
 
 
-    /*
+    /* 비동기 구현 처음 한거, 복잡함
+
     public void push(String functionName, String... arguments) {
 
         this.functionName = functionName;
@@ -162,8 +152,8 @@ public class SCQ extends Tracker {
         needsDomReady = false;
 
     }
-    */
 
+*/
 
 }
 

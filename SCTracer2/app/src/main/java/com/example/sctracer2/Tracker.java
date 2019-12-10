@@ -134,9 +134,10 @@ public class Tracker extends Activity {
         width = size.x;
         height = size.y;
 
-        String[] urlarr = { /* "http://",
+        String[] urlarr = {
+                            "http://", // 여기서는 url 전부 보내야 됨.
                             scinableConfig.gethost(),
-                            accessConfig.geturi(), */ // 파라미터만 전달.
+                            accessConfig.geturi(),
                             "?vid=", vid,
                             "&uid=", uid,
                             "&ua=", "", /* userAgent속성은 브라우저가 서버로 보낸 사용자 에이전트 헤더를 반환합니다.*/
@@ -195,15 +196,8 @@ public class Tracker extends Activity {
         String url = join(urlarr,"");
 
         // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
-        try {
 
-            scinable.sendToServer(url);
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        }
+        scinable.run(url);
 
     }
 
@@ -826,9 +820,9 @@ public class Tracker extends Activity {
             if(ck != null) {
 
                 String[] url = {
-                        //document.location.protocol=="https:"?"https://":"http://",
-                        //Scinable.Config.host,
-                        //Scinable.Access.Config.uri, // 파라미터만 전달
+                        "http://", // 여기서는 url 전부 보내야 됨.
+                        scinableConfig.gethost(),
+                        accessConfig.geturi(),
                         "?vid=", util.getVid(),
                         "&uid=", util.getUid(),
                         //'&ua=', encodeURIComponent(navigator.userAgent),
@@ -872,15 +866,8 @@ public class Tracker extends Activity {
                 String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
 
                 // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
-                try {
 
-                    scinable.sendToServer(urlFinal);
-
-                } catch (IOException e) {
-
-                    e.printStackTrace();
-
-                }
+                scinable.run(urlFinal);
 
             }
 
@@ -900,9 +887,9 @@ public class Tracker extends Activity {
 
                 String[] url = {
 
-                        //document.location.protocol=="https:"?"https://":"http://",
-                        //Scinable.Config.host,
-                        //Scinable.Access.Config.uri, // 파라미터만 전달
+                        "http://", // 여기서는 url 전부 보내야 됨.
+                        scinableConfig.gethost(),
+                        accessConfig.geturi(),
                         "?vid=", util.getVid(),
                         "&uid=", util.getUid(),
                         //"&ua=", encodeURIComponent(navigator.userAgent),
@@ -935,15 +922,8 @@ public class Tracker extends Activity {
                 String urlFinal = join(urllist.toArray(new String[urllist.size()]),"");
 
                 // 통신 부분, needsdomready 사용 안하고 바로 전송하는 것으로
-                try {
 
-                    scinable.sendToServer(urlFinal);
-
-                } catch (IOException e) {
-
-                    e.printStackTrace();
-
-                }
+                scinable.run(urlFinal);
 
             }
 

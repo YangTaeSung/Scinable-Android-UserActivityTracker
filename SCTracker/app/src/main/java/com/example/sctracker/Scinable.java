@@ -13,6 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,16 +33,16 @@ public class Scinable extends AppCompatActivity {
     public static String[] _scq = {};
     //public static Map<String, String[]> _scq = new LinkedHashMap<>();
 
+
     // SharedPreferences 사용하여 데이터 일시 저장
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor scinableEditor = sharedPreferences.edit();
 
-    // "_host"는 ECIntelligence 서버
-    public static String _host = "localhost:8080";
 
+    // "_host"는 ECIntelligence 서버
+    public static String _host = "192.168.1.19";
     public static String cookie = null; // *
     public static boolean cookieEnabled = false;
-
     public static String accountId = "";
     public static String language = null;
     public static boolean debug = false;

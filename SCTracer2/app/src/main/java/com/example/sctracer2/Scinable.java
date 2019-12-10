@@ -54,6 +54,11 @@ public class Scinable extends AppCompatActivity {
 
     }
 
+
+    /*
+    * AsyncTask 사용하지 않음. OnCreate()가 구현되어있는 곳에서 사용 가능하다.
+    * 비동기 통신이 아니다. -> OkHttp의 enqueue로 비동기 get 방식 이용.
+
     public void sendToServer(String param) throws IOException {
 
         URL url = new URL("http://" + get_host() + "/insert.php");
@@ -70,6 +75,39 @@ public class Scinable extends AppCompatActivity {
         outputStream.write(param.getBytes("UTF-8"));
         outputStream.flush();
         outputStream.close();
+
+    }*/
+
+
+    OkHttpClient client = new OkHttpClient();
+
+    // 예외처리 해줘야 됨.
+    public void run(String requesturl) {
+
+        Request request = new Request.Builder()
+                .url(requesturl)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override public void onFailure(Call call, IOException e) {
+
+                e.printStackTrace();
+
+            }
+
+            @Override public void onResponse(Call call, Response response) {
+                /*try (ResponseBody responseBody = response.body()) { // API Level 19 이상 가능
+                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                    Headers responseHeaders = response.headers();
+                    for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+                        System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+                    }
+                    System.out.println(responseBody.string());
+                }*/
+            }
+
+        });
 
     }
 

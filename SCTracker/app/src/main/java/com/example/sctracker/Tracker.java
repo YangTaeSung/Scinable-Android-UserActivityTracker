@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.view.Display;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -223,9 +224,9 @@ public class Tracker extends Activity {
         width = size.x;
         height = size.y;
 
-        String[] urlarr = { "protocol",
-                            Config.host,
-                            AccessConfig.uri,
+        String[] urlarr = { // "protocol",
+                            // Config.host,
+                            // AccessConfig.uri, // 파라미터만 보내면 됨
                             "?vid=", vid,
                             "&uid=", uid,
                             "&ua=", "", /* userAgent속성은 브라우저가 서버로 보낸 사용자 에이전트 헤더를 반환합니다.*/
@@ -286,7 +287,16 @@ public class Tracker extends Activity {
         if(needsDomReady == true) {
 
             SCQ sendData = SCQ.getInstance();
-            sendData.run(url);
+
+            try {
+
+                sendData.sendToServer(url);
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            }
 
         }
 
@@ -912,7 +922,7 @@ public class Tracker extends Activity {
                 String[] url = {
                         //document.location.protocol=="https:"?"https://":"http://",
                         //Scinable.Config.host,
-                        //Scinable.Access.Config.uri,
+                        //Scinable.Access.Config.uri, // 파라미터만 보내면 됨
                         "?vid=", Util.getVid(),
                         "&uid=", Util.getUid(),
                         //'&ua=', encodeURIComponent(navigator.userAgent),
@@ -958,7 +968,16 @@ public class Tracker extends Activity {
                 if(needsDomReady == true) {
 
                     SCQ sendData = SCQ.getInstance();
-                    sendData.run(urlFinal);
+
+                    try {
+
+                        sendData.sendToServer(urlFinal);
+
+                    } catch (IOException e) {
+
+                        e.printStackTrace();
+
+                    }
 
                 }
 
@@ -982,7 +1001,7 @@ public class Tracker extends Activity {
 
                         //document.location.protocol=="https:"?"https://":"http://",
                         //Scinable.Config.host,
-                        //Scinable.Access.Config.uri,
+                        //Scinable.Access.Config.uri, // 파라미터만 보내면 됨
                         "?vid=", Util.getVid(),
                         "&uid=", Util.getUid(),
                         //"&ua=", encodeURIComponent(navigator.userAgent),
@@ -1017,7 +1036,16 @@ public class Tracker extends Activity {
                 if(needsDomReady == true) {
 
                     SCQ sendData = SCQ.getInstance();
-                    sendData.run(urlFinal);
+
+                    try {
+
+                        sendData.sendToServer(urlFinal);
+
+                    } catch (IOException e) {
+
+                        e.printStackTrace();
+
+                    }
 
                 }
 
