@@ -1,5 +1,7 @@
 package com.example.sctracker2;
 
+import android.content.Intent;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Util {
@@ -20,7 +23,7 @@ public class Util {
         /*
         자바스크립트를 이용해서 특정 URL로 접속했을 때 다른 URL로 이동시킬 수 있습니다,
         ex) window.location.href = 'http://www.abc.com/';
-        (여기서는 액티비티의 변환이 이루어져야 됨)
+        (여기서는 액티비티의 변환이 이루어져야 됨 - onCreate() 상에서 가능)
         location.href는 객체의 속성이며, loaction.replace()는 메서드(함수)로 작동된다.
         href는 페이지를 이동하는 것이기 때문에 뒤로가기 버튼을 누른경우 이전 페이지로 이동이 가능하지만,
         replace는 현재 페이지를 새로운 페이지로 덮어 씌우기 때문에 이전 페이지로 이동이 불가능하다.
@@ -28,7 +31,7 @@ public class Util {
         replace의 경우는 이전페이지로 접근이 필요없는경우 보안상 덮어씌우는 것도 괜찮을듯 하다.
         */
 
-        // 현재 액티비티에서 매개변수로 받은 액티비티로 전환?
+        // suggest에서 한 번 나오는 함수.
 
     }
 
@@ -69,7 +72,7 @@ public class Util {
     }
 
 
-    // 브라우저의 버전을 리턴하는 함수. Android sdk의 버전을 출력해야 하는가
+    // 브라우저의 버전을 리턴하는 함수.
     /*public int msie() {
 
         return 0;
@@ -87,7 +90,7 @@ public class Util {
 
     // HTMLElement.offsetWidth 읽기 전용 속성은 정수로 요소의 레이아웃 폭을 돌려줍니다.
     // var intElemOffsetWidth = element.offsetWidth;
-    // element가 HTML요소로 예상됨.
+    // element가 HTML요소
     /* public int elementWidth() {
 
         if(msie() < 10) {
@@ -104,6 +107,7 @@ public class Util {
     } */
 
 
+    // suggest에서 한 번 사용
     public String trim(String value) {
 
         String result = null;
@@ -131,20 +135,19 @@ public class Util {
     }
 
 
+    // value가 있으면 value를 출력, 없으면 공백을 출력
+    // value가 입력이 안되어도(매개변수 없이 함수 호출해도) 공백출력
+    // value=""여도 입력이 안된 것으로 간주하고 후자의 공백('')을 출력
     public String defaultString() {
         return "";
     }
-
-
     public String defaultString(String value) {
         return value;
     }
 
 
-    /*
-    replace의 대체되어야 하는 문자열 표현들 ex) \s+ 는 공백, \d+ 는 숫자
-    예와 같은 의미들이 있을 것 같은데 모르기 떄문에 일단은 문자 그대로 표현해놓음
-    */
+
+    // replace의 대체되어야 하는 문자열 표현들 ex) \s+ 는 공백, \d+ 는 숫자
     /*
     public String adjustCss(String val, String suggest) {
 
@@ -159,8 +162,7 @@ public class Util {
                     .replace("(?i)<\\/B>", SuggestConfig.FontEnd);
             // 역슬래시 하나 더해줘서 escape 문자 처리
             // 해당 문자열 앞에 (?i)를 사용하면 대소문자 구분 안함
-            // 위에 있는 Config는 suggest에 있는거. FontStart와 End는 못찾음.
-            // 일단 Font가 들어가는걸로 봐서 안드로이드에서 구현 안해도 될 것 같음.
+            // suggest 사용. 보류
 
         }
         // This exception should never occur.
@@ -174,6 +176,7 @@ public class Util {
 
     }
 
+    // suggest부분. 보류
     public String removeBTag(String str) {
 
         String result = null;
@@ -194,7 +197,7 @@ public class Util {
     }
 
 
-    // 호출되는 경우가 없어서 구현 보류
+    // html 사용. 보류
     public String htmlEscape() {
 
         return "";
@@ -203,28 +206,38 @@ public class Util {
 
     */
 
-    private String paramValues;
+
+    // getQueryString()의 결과가 키, 쌍의 형태로 paramValues로 들어가기 때문에
+    // HashMap으로 구현
+    private HashMap<String, String> paramValues;
 
 
-    // location.search : URL의 쿼리 문자열 부분을 반환
+    // location.search : 현재 URL의 쿼리 문자열 부분을 반환
     // ex) www.abc.com?aaasssddd=e@e.e 이면  ?aaasssddd=e@e.e 반환
     // split : 문자열을 하위 문자열 배열로 나눕니다.
     // URL 쿼리 문자열을 ParamName과 ParamValue값으로 나누어 result에 저장
-    // 구현 보류, URLEncode는 구현함. 우선 액티비티로 어떻게 구현할지 생각하기
+    // getParameter()에서 아래의 result가 paramValues로 들어감
+    /*
+
     public String getQueryString() {
 
-        String[] result;
+        HashMap<String, String> result;
+
         return "";
 
     }
 
+     */
 
-    // 위와 같이 구현 보류
+    /*
+
     public String getQueryArray() {
 
         return "";
 
     }
+
+     */
 
 
     public String today() {
@@ -237,6 +250,8 @@ public class Util {
     }
 
 
+    /* getQueryString을 이용할 수 없음/
+
     public String getParameter(String name) {
 
         if(paramValues == null) {
@@ -248,6 +263,8 @@ public class Util {
         return "";
 
     }
+
+     */
 
 
     // 쿠키값을 리턴해주는 메소드. Document.cookie는 Javascript상의 쿠키 저장소
@@ -278,6 +295,8 @@ public class Util {
 
             }
 
+            // 결과적으로 " 이름=값; 만료시간=만료시간 " 형태의 쿠키에서
+            // " 이름=값 "만 출력(세미콜론 없이 출력)
             return scinable.getcookie().substring(len,end); // unescape()함수 무시 -> 디코딩 함수
 
         } else {
@@ -344,19 +363,23 @@ public class Util {
     // 위 함수에서 세 번째 파라미터가 존재하지 않을 때
     public void setCookie(String name, String value) {
 
-        String str = name + "=" + encodeURI(value);
+        if(scinable.getcookieEnabled()) {
 
-        /*
-        if (Scinable.domainName != null) {
+            String str = name + "=" + encodeURI(value);
 
-            str += " domain=" + Scinable.domainName + ";";
+            /*
+              if (Scinable.domainName != null) {
+
+                 str += " domain=" + Scinable.domainName + ";";
+
+               }
+
+                 str += " path=/";
+              */
+
+            scinable.setcookie(str); // " 이름=값 " 형태의 쿠키
 
         }
-
-        str += " path=/";
-         */
-
-        scinable.setcookie(str); // " 이름=값 " 형태의 쿠키
 
     }
 
@@ -389,30 +412,53 @@ public class Util {
             if(scinable.getcookieEnabled()) {
                 // getParameter가 필요하고 getParameter는 getQueryString이 필요한데
                 // getQueryString이 페이지 URL의 쿼리를 반환하는거기 때문에
-                // 안드로이드에서 구현 불가.
+                // 안드로이드에서 구현 불가. parameter 및 channel도 안쓰는 것으로 간주
+
+                // CookieCampaign과 ScinableCampaign, CookieChannel과 ScinableChannel가
+                // 같은지 검사한 후, 같지 않을 시에 new visit 처리를 한다.
+                // 검사 시에 cv는 null 처리가 new visit의 플래그이기 때문에
+                // 기존 코드와 순서를 약간 변경한다.
+                // ( Campaign과 Channel을 사용하지 않기 때문에 cv는 null을 만들 수 있는
+                // 플래그가 존재하지 않음. 고로 "cv!=null" 이 항상 성립하기 때문에 순서 변경 )
 
                 String cv = getCookie("___cv");
                 String[] cvArr = {};
-                String cookieCampaign = "";
-                String cookieChannel = "";
+                // String cookieCampaign = "";
+                // String cookieChannel = "";
+
+
+
 
                 if(cv != null) {
 
                     cvArr = cv.split(".");
+                    // Channel과 Campaign을 사용하지 않을 시에
+                    // cvArr[0] : vid
+                    // cvArr[1] : previsitDate
+                    // cvArr[2] : visitTime
+                    // cvArr[3] : 1(frequency)
 
-                    if(cvArr.length > 2) {
+                    // 2와 5로 나누는 건 버전 차이라고 sc.js에 명시되어 있음
+                    // 기존에 6개였으나 Channel과 Campaign을 사용하지 않으면4개
+                    // if(cvArr.length > 2) {
+                    if(cvArr.length > 0) {
 
-                        cookieCampaign = cvArr[2];
+                        // cookieCampaign = cvArr[2]; // 사용 안할 예정
 
                     }
 
-                    if(cvArr.length > 5) {
+                    // if(cvArr.length > 5) {
+                    if(cvArr.length > 3) {
 
-                        cookieChannel = cvArr[5];
+                        // cookieChannel = cvArr[5]; // 사용 안할 예정
 
                     }
 
                 }
+
+
+
+                /*
 
                 String sciCampaign = null;
 
@@ -467,6 +513,7 @@ public class Util {
                     }
 
                 }
+                */
 
                 ////////////////
                 // new visit
@@ -483,28 +530,37 @@ public class Util {
                     scinable.setpageView(1);
                     scinable.setnewVisit(1);
 
-                    // sciCampaign이랑 sciChannel 나오는거 일단 문자열로 대충 처리.
-                    cv = scinable.getvid() + "." + scinable.getpreVisitDate() + "." + sciCampaign + "." +
-                            scinable.getvisitTime() + ".1." + sciChannel;
+                    // cv = scinable.getvid() + "." + scinable.getpreVisitDate() + "." + sciCampaign + "." + scinable.getvisitTime() + ".1." + sciChannel;
+                    // 채널이랑 캠페인은 사용하지 않는 것으로 간주. ( 쿼리스트링에서 가져와야 하는데 안드로이드에선 X )
+                    cv = scinable.getvid() + "." + scinable.getpreVisitDate() + "." + scinable.getvisitTime() + ".1";
 
-                } else {
+                } else { // cv가 존재할 때
+                    // 아까 split을 하고 cvArr에 저장된 결과
+                    // cvArr[0] : vid
+                    // cvArr[1] : previsitDate
+                    // cvArr[2] : visitTime
+                    // cvArr[3] : 1(pageview)
 
                     scinable.setvid(cvArr[0]);
 
-                    if(cvArr.length > 5) {
+                    // 기존에 6개였으나 Channel과 Campaign을 사용하지 않으면4개
+                    // if(cvArr.length < 5) {
+                    if(cvArr.length < 3) {
 
                         scinable.setvisitTime(new Date().getTime());
                         scinable.setpageView(1);
 
-                    } else {
+                    } else { // 여기는 이미 값이 cv에 있기 때문에
 
-                        scinable.setvisitTime(Long.getLong(cvArr[3]));
-                        scinable.setpageView(Integer.parseInt(cvArr[4]) + 1);
+                        // scinable.setvisitTime(Long.getLong(cvArr[3])); cvArr[3]은 visitTime
+                        scinable.setvisitTime(Long.getLong(cvArr[2]));
+                        // scinable.setpageView(Integer.parseInt(cvArr[4]) + 1); cvArr[4]는 pageView
+                        scinable.setpageView(Integer.parseInt(cvArr[3]) + 1);
 
                     }
 
-                    cv = scinable.getvid() + "." + scinable.getPreVisitDate() + "." + cookieCampaign + "." +
-                            scinable.getvisitTime() + "." + scinable.getpageView() + "." + cookieChannel;
+                    cv = scinable.getvid() + "." + scinable.getPreVisitDate() + "." +
+                            scinable.getvisitTime() + "." + scinable.getpageView();
 
                 }
 
@@ -512,16 +568,15 @@ public class Util {
 
                 return scinable.getvid();
 
-            } else {
+            } else { // cookieEnabled가 false일 때
 
                 return Long.toString(createUUID());
 
-            }
+            }   /* vid는 어찌됐건 UUID로 만듦. 중요한 건 여기서 쿠키를 생성 및 Scinable에 정보 입력 */
 
         }
 
     }
-
 
 
     public String getUid() {

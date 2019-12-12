@@ -121,4 +121,28 @@ public class Trans {
 
     }
 
+    public void clearorder() {
+
+        order.clear();
+
+    }
+
+    public void clearitems() {
+
+        items.clear();
+
+    }
+
+    public void clearmember() {
+
+        member.clear();
+
+    }
+
+    public void clearclaim() {
+
+        claim.clear();
+
+    }
+
 }

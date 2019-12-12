@@ -45,7 +45,7 @@ if (typeof Scinable !== 'object') {
                 closeText: 'Close'
         }
         Scinable.regional['ja'] = {
-                closeText: '閉じる'
+                closeText: '閉じる' // 닫기
         }
 
         // addEventListener와 attachEvent로 나누는 건 브라우저 차이
@@ -741,6 +741,8 @@ if (typeof Scinable !== 'object') {
                     return value.replace(/^\s+/g, "");
                 },
                 defaultString : function(value) {
+                    // value가 있으면 value를 출력, 없으면 공백을 출력
+                    // value가 입력이 안되어도(매개변수 없이 함수 호출해도) 공백출력, value=""여도 입력이 안된 것으로 간주하고 후자의 공백('')을 출력
                     return (value || '');
                 },
                 adjustCss : function(val, suggest) {
@@ -765,14 +767,14 @@ if (typeof Scinable !== 'object') {
                 getQueryString : function(){
                     var result = {};
                     if(1 < window.location.search.length){
-                        var query = window.location.search.substring(1);
-                        var parameters = query.split('&');
+                        var query = window.location.search.substring(1); // 맨 처음 substring(0)의 물음표 제외하고 모든 글자들 떼옴
+                        var parameters = query.split('&'); // 요소별로 나눠서 배열에 저장
                         for(var i=0; i < parameters.length; i++) {
                             try {
                                 var element = parameters[i].split('=');
                                 var paramName = decodeURIComponent(element[0]);
-                                var paramValue = decodeURIComponent(element[1]);
-                                result[paramName] = paramValue;
+                                var paramValue = decodeURIComponent(element[1]); // 파라미터별로 이름과 값을 따로 저장
+                                result[paramName] = paramValue; // result[name] = value 형태
                             } catch (e) {}
                         }
                     }
@@ -804,7 +806,7 @@ if (typeof Scinable !== 'object') {
 
                     return y.toString() + m.toString() + d.toString();
                 },
-                getParameter : function(name) {
+                getParameter : function(name) { // 파라미터의 이름을 주면 그 값을 리턴하는 함수
                     if(Scinable.Util.paramValues == null) {
                         Scinable.Util.paramValues = Scinable.Util.getQueryString();
                     }
@@ -823,7 +825,7 @@ if (typeof Scinable !== 'object') {
                         if (start == -1) return '';
                         var end = document.cookie.indexOf(";",len);
                         if (end == -1) end = document.cookie.length; // 쿠키의 마지막은 세미콜론 없이 끝나기 때문에 세미콜론이 보이지 않으면 쿠키전체의 길이가 찾고있는 값의 마지막 부분
-                        return unescape(document.cookie.substring(len, end)); // 문자열을 디코딩합니다. 
+                        return unescape(document.cookie.substring(len, end)); // 문자열을 디코딩합니다, substring의 두번째 파라미터는 그 위치 바로 앞까지 출력하므로 세미콜론은 출력되지 않는다. 
                     } else {
                         return '';
                     }
@@ -856,12 +858,12 @@ if (typeof Scinable !== 'object') {
                         if(cookieEnabled) { // 쿠키가 활성화 되어있는지 확인. 쿠키 있으면
                             this.getUid(); // 함수호출했는데 리턴을 받는 변수가 없음.
 
-                            var cv = Scinable.Util.getCookie("___cv");
+                            var cv = Scinable.Util.getCookie("___cv"); // getCookie() 하면 "이름=값" 형태
                             var cvArr = [];
                             var cookieCampaign = '';
                             var cookieChannel = '';
 
-                            // 이전에 만들었던 cv가 있으면 그 때 값을 cvArr에 저장
+                            // 이전에 만들었던 cv가 있으면 cvArr에 저장 ( 이전에 만들지 않았으면 getCookie(___cv)가 호출이 안됨)
                             if(cv) {
                                 cvArr = cv.split('.');
 
@@ -880,7 +882,7 @@ if (typeof Scinable !== 'object') {
                             if(Scinable.campaign) {
                                 sciCampaign = Scinable.campaign;
                             } else {
-                                sciCampaign = Scinable.Util.getParameter(Scinable.Param.eciCampaign);
+                                sciCampaign = Scinable.Util.getParameter(Scinable.Param.eciCampaign); // 캠페인은 파라미터의 이름
                                 if(sciCampaign == '' && Scinable.Param.campaign != null) {
                                     sciCampaign = Scinable.Util.getParameter(Scinable.Param.campaign);
                                 }
@@ -957,7 +959,7 @@ if (typeof Scinable !== 'object') {
                             Scinable.Util.setCookie("___cv", cv, Scinable.Config.cvExpire);
 
                             return Scinable.vid;
-                        } else { 
+                        } else { // cookieEnabled가 false일 때
                             //disabled cookie, no campaign measurement
                             return Scinable.Util.createUUID();
                         }
@@ -1243,16 +1245,16 @@ if (typeof Scinable !== 'object') {
             var arr = [];
             for (var i = 0; i < Scinable.Trans.items.length; ++i) {
                 var rowArr = [Scinable.Trans.type];
-                arr.push(rowArr.concat(Scinable.Trans.order,Scinable.Trans.items[i]));
+                arr.push(rowArr.concat(Scinable.Trans.order,Scinable.Trans.items[i])); // JavaScript의 concat()은 매개변수에 배열이랑 스트링이 함께 들어가있어도 상관 없음
             }
 
-            var jstr = '{"type":"order", "data":' + JSON.stringify(arr) + '}';
+            var jstr = '{"type":"order", "data":' + JSON.stringify(arr) + '}'; // stringify(arr) => [rowArr, Trans.order[0], Trans.order[1],...,Trans.items[i]] 이런 형식
 
             if(Scinable.debug) {
                 console.log(jstr);
             }
 
-            Scinable.Trans.order = [];
+            Scinable.Trans.order = []; // 초기화
             Scinable.Trans.items = [];
             return jstr;
         }
@@ -1292,7 +1294,7 @@ if (typeof Scinable !== 'object') {
             var arr = [];
             for (var i = 0; i < Scinable.Trans.claim.length; ++i) {
                 var rowArr = [Scinable.Trans.type];
-                arr.push(rowArr.concat(Scinable.Trans.claim[i]));
+                arr.push(rowArr.concat(Scinable.Trans.claim[i])); // [타입, 클레임, 타입, 클레임, 타입, 클레임 ...] 반복
             }
 
             var jstr = '{"type":"claim", "data":' + JSON.stringify(arr) + '}';

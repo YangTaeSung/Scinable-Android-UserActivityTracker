@@ -1,6 +1,7 @@
 package com.example.sctracker2;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.view.Display;
 

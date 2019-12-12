@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -317,32 +319,49 @@ public class Scinable extends AppCompatActivity {
 
             String cz = util.getCookie("___cz");
 
-            if(trans.getorder().get(0) == cz) {
+            if (trans.getorder().get(0) == cz) {
 
                 return "";
 
             } else {
 
-                util.setCookie("___cz",trans.getorder().get(0), scinableConfig.getczExpire());
+                util.setCookie("___cz", trans.getorder().get(0), scinableConfig.getczExpire());
+
+            }
+        }
+
+        String[] rowArr = {trans.gettype()};
+        List<String> arrayList = new ArrayList<>();
+        int i = 0;
+
+        while(i < trans.getitems().size()) {
+
+            String order = rowArr[0] + ", " + trans.getorder().get(0);
+
+            for (int j = 1; j < trans.getorder().size(); ++j) {
+
+                order += ", " + trans.getorder().get(j);
 
             }
 
-            String[] arr;
-            int orderLength = trans.getorder().size();
-            int itemsLength = trans.getitems().size();
+            order += ", " + trans.getitems().get(i);
 
-            for ( int i = 0; i < trans.getitems().size(); ++i) {
+            arrayList.add(order);
 
-                String[] rowArr = {trans.gettype()};
-                /* 이후 concat() 메소드를 실행하면 Array 속 자료형이 다름. 넘김.*/
-
-            }
+            i++;
 
         }
 
-        return "";
+        String jstr = "{\"type\":\"order\", \"data\":" + arrayList.toString() + "}";
+
+        trans.clearorder();
+        trans.clearitems();
+
+        return jstr;
 
     }
+
+
 
 
     public String getMemberData() {
@@ -369,16 +388,15 @@ public class Scinable extends AppCompatActivity {
 
         // 두 배열의 요소들을 arr배열에 통합한다.
         // sc.js의 concat함수 구현
-        String arr[];
         String[] rowArr = {trans.gettype()};
         List<String> list = new ArrayList(Arrays.asList(rowArr));
         list.addAll(trans.getmember());
-        arr = list.toArray(new String[list.size()]);
 
         // stringify()는 ["John","Peter","Sally","Jane"] 이런 형태로 출력.
         // 위와같은 형태로 출력하려면 Arrays.toString()
-        String jstr = "{\"type\":\"member\", \"data\":" + Arrays.toString(arr) + "}";
+        String jstr = "{\"type\":\"member\", \"data\":" + list.toString() + "}";
 
+        trans.clearmember();
         return jstr;
 
     }
@@ -388,21 +406,24 @@ public class Scinable extends AppCompatActivity {
 
         String[] arr = {};
         List<String> arrlist =new ArrayList(Arrays.asList(arr));
+        String[] rowArr = {trans.gettype()};
 
         for(int i = 0; i < trans.getclaim().size(); ++i) {
 
+            /*
             String[] rowArr = {trans.gettype()};
             List<String> list = new ArrayList(Arrays.asList(rowArr));
             list.addAll(Arrays.asList(trans.getclaim().get(i)));
             rowArr = list.toArray(new String[list.size()]);
-            arrlist.addAll(Arrays.asList(rowArr));
+            */
+            arrlist.add(rowArr[0]);
+            arrlist.add(trans.getclaim().get(i));
 
         }
 
-        arr = arrlist.toArray(new String[arrlist.size()]);
+        String jstr = "{\"type\":\"claim\", \"data\":" + arrlist.toString() + "}";
 
-        String jstr = "{\"type\":\"claim\", \"data\":" + Arrays.toString(arr) + "}";
-
+        trans.clearclaim();
         return jstr;
 
     }
